@@ -1,0 +1,58 @@
+<!--
+  CampusCare — Standalone Sidebar Component Template
+  File: frontend/components/sidebar.html
+  Managed by: frontend/assets/js/sidebar.js
+-->
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+<aside id="app-sidebar" class="app-sidebar" aria-label="Portal Navigation">
+  <!-- Brand Section -->
+  <div class="sidebar-brand">
+    <div class="brand-icon">CC</div>
+    <div class="brand-text">
+      <h1>CampusCare</h1>
+      <p id="sidebar-dept-code">NIET PORTAL</p>
+    </div>
+  </div>
+
+  <!-- Role Authority & Scope Box -->
+  <div class="sidebar-role-panel">
+    <div class="sidebar-role-header">
+      <span id="sidebar-role-badge" class="sidebar-role-badge">
+        <span data-icon="shield" data-icon-size="14"></span> Role Portal
+      </span>
+      <span class="sidebar-status-tag" style="font-size:0.65rem; color:var(--color-success-text); font-weight:700;">ACTIVE</span>
+    </div>
+    <div id="sidebar-role-scope" class="sidebar-role-scope">
+      Personal Grievances Scope
+    </div>
+    <div style="font-size:0.68rem; color:var(--color-text-light); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:4px; font-weight:600;">
+      Authorized Capabilities
+    </div>
+    <div id="sidebar-perm-chips" class="sidebar-perm-chips">
+      <!-- Capabilities injected dynamically by sidebar.js -->
+    </div>
+  </div>
+
+  <!-- Grouped Navigation Menu -->
+  <nav class="sidebar-nav" aria-label="Main Navigation">
+    <div id="sidebar-nav-groups">
+      <!-- Injected dynamically based on role permissions -->
+    </div>
+  </nav>
+
+  <!-- Sidebar Footer User Profile Card -->
+  <div class="sidebar-footer">
+    <div class="user-mini-card">
+      <div id="sidebar-user-avatar" class="user-avatar">
+        CC
+      </div>
+      <div class="user-details">
+        <div id="sidebar-user-name" class="user-name">User Name</div>
+        <div id="sidebar-user-role" class="user-role-badge">Role</div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" data-action="logout" title="Sign out" style="padding:4px 6px;margin-left:auto;" aria-label="Sign out">
+        <span data-icon="log-out" data-icon-size="16"></span>
+      </button>
+    </div>
+  </div>
+</aside>

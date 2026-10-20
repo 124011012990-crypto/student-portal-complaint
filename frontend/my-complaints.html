@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Grievances — CampusCare</title>
+  <script>(function(){const t=localStorage.getItem('campuscare_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="app-sidebar" class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation drawer"><span data-icon="menu" data-icon-size="20"></span></button>
+          <nav class="breadcrumbs">
+            <a href="dashboard.html">Dashboard</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">My Grievances</span>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <a href="notifications.html" class="header-action-btn" title="Notifications">
+            <span data-icon="bell" data-icon-size="18"></span>
+            <span id="notif-bubble" class="notif-bubble" style="display:none;">0</span>
+          </a>
+          <button class="btn btn-ghost btn-sm" data-action="logout"><span data-icon="log-out" data-icon-size="16"></span> Logout</button>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <div class="page-header">
+          <div class="page-title-group">
+            <h2>My Grievance History</h2>
+            <p class="page-subtitle">Track the status, officer notes, and progress of grievances you have reported.</p>
+          </div>
+          <div class="page-actions">
+            <a href="submit-complaint.html" class="btn btn-primary"><span data-icon="file-plus" data-icon-size="16"></span> Submit New Grievance</a>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="filter-bar">
+          <div class="search-input-group">
+            <span class="search-icon"><span data-icon="search" data-icon-size="16"></span></span>
+            <input type="text" id="search-input" class="form-control search-input" placeholder="Search by reference, keyword or title...">
+          </div>
+
+          <div class="filter-controls">
+            <select id="filter-status" class="form-control" style="width:auto;">
+              <option value="">All Statuses</option>
+              <option value="Submitted">Submitted</option>
+              <option value="Under Review">Under Review</option>
+              <option value="Assigned">Assigned</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+              <option value="Closed">Closed</option>
+              <option value="Escalated">Escalated</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+
+            <select id="filter-priority" class="form-control" style="width:auto;">
+              <option value="">All Priorities</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+
+            <button type="button" id="btn-reset-filters" class="btn btn-secondary btn-sm">Reset</button>
+          </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="card" style="padding:0; overflow:hidden;">
+          <div class="table-responsive" style="border:none; box-shadow:none;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ref ID</th>
+                  <th>Title & Category</th>
+                  <th>Department</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Confidentiality</th>
+                  <th>Submitted</th>
+                </tr>
+              </thead>
+              <tbody id="complaints-tbody">
+                <tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--color-text-muted);">Loading your grievances...</td></tr>
+              </tbody>
+            </table>
+
+            <div id="complaints-empty-state" class="empty-state" style="display:none;">
+              <div class="empty-icon"><span data-icon="folder" data-icon-size="36"></span></div>
+              <h4 class="empty-title">You have not submitted any grievances yet</h4>
+              <p class="empty-desc">Whenever you encounter campus issues or need administrative assistance, file a grievance here.</p>
+              <a href="submit-complaint.html" class="btn btn-primary"><span data-icon="file-plus" data-icon-size="16"></span> File a Grievance Now</a>
+            </div>
+          </div>
+
+          <div class="pagination">
+            <div id="pagination-info" style="font-size:var(--font-size-xs); color:var(--color-text-muted);">Showing records</div>
+            <div id="pagination-container" class="page-numbers"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="assets/js/footer.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/complaints.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      complaints.initList(true); // true = my complaints
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusCare — Student Grievance & Complaint Management Portal</title>
+  <script>(function(){const t=localStorage.getItem('campuscare_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body style="background:var(--color-bg);">
+
+  <!-- Public Top Navigation -->
+  <header style="background:var(--color-surface); border-bottom: 1px solid var(--color-border); padding: 1rem 2rem; display:flex; align-items:center; justify-content:space-between;">
+    <div style="display:flex; align-items:center; gap:0.75rem;">
+      <div class="brand-icon" style="width:36px; height:36px; font-size:1.1rem;">CC</div>
+      <div>
+        <h1 style="font-size:1.15rem; font-weight:700; color:var(--color-text-main); letter-spacing:-0.01em;">CampusCare</h1>
+        <p style="font-size:0.7rem; color:var(--color-text-muted); letter-spacing:0.04em;">COLLEGE GRIEVANCE PORTAL</p>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:1rem;">
+      <button type="button" class="theme-toggle-btn" id="theme-toggle-button" onclick="ThemeManager.toggle()" aria-label="Toggle theme" title="Toggle theme"></button>
+      <a href="login.html" class="btn btn-secondary btn-sm">Sign In</a>
+      <a href="login.html" class="btn btn-primary btn-sm">Submit Grievance</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="landing-hero">
+    <div style="max-width:900px; margin:0 auto; position:relative; z-index:2;">
+      <span class="badge" style="background:rgba(59,130,246,0.2); color:#93c5fd; border:1px solid rgba(59,130,246,0.4); margin-bottom:1.5rem; padding:6px 14px; font-size:0.85rem;">
+        Official College Grievance Redressal Mechanism
+      </span>
+      <h2 class="landing-title">Empowering Students, Ensuring Fair & Rapid Resolution</h2>
+      <p class="landing-subtitle">
+        CampusCare provides a confidential, transparent, and structured channel for college students to voice academic, infrastructural, hostel, and administrative grievances directly to faculty and grievance officers.
+      </p>
+
+      <div class="hero-actions">
+        <a href="login.html" class="btn btn-primary btn-lg" style="box-shadow: 0 10px 25px rgba(37,99,235,0.4);">
+          Access Student Portal ➔
+        </a>
+        <a href="#track-section" class="btn btn-secondary btn-lg" style="background:rgba(255,255,255,0.1); color:#fff; border-color:rgba(255,255,255,0.2);">
+          Quick Grievance Tracker
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Track Section -->
+  <section id="track-section" style="background:var(--color-surface-hover); padding:3.5rem 1.5rem; border-bottom:1px solid var(--color-border);">
+    <div style="max-width:680px; margin:0 auto; text-align:center;">
+      <h3 style="font-size:1.5rem; font-weight:700; color:var(--color-text-main); margin-bottom:0.5rem;">Track Grievance Status</h3>
+      <p style="color:var(--color-text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Enter your unique complaint reference number to verify current status and officer assignments.</p>
+
+      <form id="public-track-form" style="display:flex; gap:0.5rem; max-width:540px; margin:0 auto;">
+        <input type="text" id="track-ref-input" class="form-control" placeholder="e.g. CC-2026-00101" required style="font-size:1rem; padding:0.8rem 1rem;">
+        <button type="submit" class="btn btn-primary" style="white-space:nowrap; padding:0.8rem 1.5rem;">Track Now</button>
+      </form>
+      <div id="track-result-box" style="margin-top:1.5rem; display:none;"></div>
+    </div>
+  </section>
+
+  <!-- Categories Covered Grid -->
+  <section style="padding:4.5rem 1.5rem; max-width:1200px; margin:0 auto;">
+    <div style="text-align:center; max-width:700px; margin:0 auto 3rem;">
+      <h3 style="font-size:1.85rem; font-weight:700; color:var(--color-text-main);">Comprehensive Grievance Categories</h3>
+      <p style="color:var(--color-text-muted); margin-top:0.5rem;">Every department and operational facility across the campus is monitored with strict SLA resolution timelines.</p>
+    </div>
+
+    <div class="features-grid" style="padding:0;">
+      <div class="feature-box">
+        <div class="feature-icon"><span data-icon="file-text" data-icon-size="24"></span></div>
+        <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem; color:var(--color-text-main);">Academics & Teaching</h4>
+        <p style="color:var(--color-text-muted); font-size:0.875rem;">Course curriculum delivery, syllabus schedules, faculty responsiveness, lecture overlaps, and internal evaluation marks.</p>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon"><span data-icon="settings" data-icon-size="24"></span></div>
+        <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem; color:var(--color-text-main);">Labs & Classrooms</h4>
+        <p style="color:var(--color-text-muted); font-size:0.875rem;">Projectors, lab workstations, specialized test equipment, ventilation, air conditioning, and safety gear.</p>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon"><span data-icon="clipboard-list" data-icon-size="24"></span></div>
+        <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem; color:var(--color-text-main);">Hostels & Dining</h4>
+        <p style="color:var(--color-text-muted); font-size:0.875rem;">Room maintenance, hot water supply, mess food hygiene, drinking water purifiers, and residential warden support.</p>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon"><span data-icon="refresh-cw" data-icon-size="24"></span></div>
+        <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem; color:var(--color-text-main);">IT & Campus Internet</h4>
+        <p style="color:var(--color-text-muted); font-size:0.875rem;">High-speed campus Wi-Fi access points, student portal authentication, library digital repositories, and email accounts.</p>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon"><span data-icon="shield" data-icon-size="24"></span></div>
+        <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem; color:var(--color-text-main);">Safety & Wellbeing</h4>
+        <p style="color:var(--color-text-muted); font-size:0.875rem;">Campus pathway lighting, security patrols, emergency first aid, medical infirmary, and anti-harassment protection.</p>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon"><span data-icon="check-circle-2" data-icon-size="24"></span></div>
+        <h4 style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem; color:var(--color-text-main);">Certificates & Admin</h4>
+        <p style="color:var(--color-text-muted); font-size:0.875rem;">Bona fide certificates, official transcripts, scholarship verification, fee receipts, and bus transport passes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background:var(--color-surface); color:var(--color-text-muted); padding:3.5rem 2rem 2rem; border-top:1px solid var(--color-border);">
+    <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:2.5rem; margin-bottom:2.5rem;">
+      <div>
+        <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.75rem;">
+          <div class="brand-icon" style="width:32px; height:32px; font-size:0.95rem;">CC</div>
+          <strong style="color:var(--color-text-main); font-size:1.1rem;">CampusCare</strong>
+        </div>
+        <p style="font-size:0.85rem; line-height:1.6; margin-bottom:1rem;">
+          Statutory Student Grievance Redressal Portal. Ensuring equitable, confidential, and time-bound resolution across academic, infrastructural, and administrative domains.
+        </p>
+        <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; color:var(--color-success); background:var(--color-success-bg); padding:4px 10px; border-radius:var(--radius-full); border:1px solid var(--color-success-border);">
+          <span class="system-status-indicator" style="width:6px; height:6px;"></span> Core Redressal Engine Active
+        </div>
+      </div>
+
+      <div>
+        <h4 style="font-size:0.9rem; font-weight:700; color:var(--color-text-main); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">Portal Access</h4>
+        <ul style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.85rem;">
+          <li><a href="login.html" style="color:var(--color-text-muted); transition:color 0.15s ease;">Student Grievance Login</a></li>
+          <li><a href="login.html" style="color:var(--color-text-muted); transition:color 0.15s ease;">Faculty &amp; Officer Desk</a></li>
+          <li><a href="login.html" style="color:var(--color-text-muted); transition:color 0.15s ease;">Institutional Administrator</a></li>
+          <li><a href="#track-section" style="color:var(--color-text-muted); transition:color 0.15s ease;">Public Grievance Tracker</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="font-size:0.9rem; font-weight:700; color:var(--color-text-main); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">Assurance &amp; SLA</h4>
+        <ul style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.85rem;">
+          <li><span style="color:var(--color-text-muted);">Standard Resolution: <strong>5 Working Days</strong></span></li>
+          <li><span style="color:var(--color-text-muted);">Urgent Escalations: <strong>24 - 48 Hours</strong></span></li>
+          <li><span style="color:var(--color-text-muted);">Staff Conduct: <strong>Admin-Shielded</strong></span></li>
+          <li><span style="color:var(--color-text-muted);">Anonymity: <strong>Zero Identity Exposure</strong></span></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="font-size:0.9rem; font-weight:700; color:var(--color-text-main); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">Grievance Cell</h4>
+        <p style="font-size:0.85rem; line-height:1.6; margin-bottom:0.5rem;">
+          Central Redressal Committee<br>
+          Administrative Block, Room 102<br>
+          Email: <code style="color:var(--color-primary); font-family:var(--font-mono);">grievance@campuscare.edu</code>
+        </p>
+      </div>
+    </div>
+
+    <div style="max-width:1100px; margin:0 auto; padding-top:1.5rem; border-top:1px solid var(--color-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; font-size:0.75rem; color:var(--color-text-light);">
+      <div>&copy; <span id="current-year">2026</span> CampusCare Higher Education Portal. All statutory rights reserved.</div>
+      <div style="display:flex; gap:1.25rem;">
+        <span>Statutory Compliance</span>
+        <span>Anti-Ragging Shield</span>
+        <span>Equal Opportunity Cell</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Quick Track Form Handler
+    document.getElementById('public-track-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const ref = document.getElementById('track-ref-input').value.trim();
+      const resultBox = document.getElementById('track-result-box');
+      if (!ref) return;
+
+      resultBox.style.display = 'block';
+      resultBox.innerHTML = '<div style="color:var(--color-text-muted);">Checking grievance records...</div>';
+
+      try {
+        window.location.href = `complaint-details.html?ref=${encodeURIComponent(ref)}`;
+      } catch (err) {
+        resultBox.innerHTML = `<div class="badge badge-rejected" style="padding:0.75rem 1rem;">Grievance reference not found. Please log in to view personal cases.</div>`;
+      }
+    });
+  </script>
+</body>
+</html>

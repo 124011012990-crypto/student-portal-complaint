@@ -1,0 +1,17 @@
+.git
+.gitignore
+.env
+.env.local
+.env.production
+backend/.env
+backend/.env.local
+node_modules
+backend/storage/logs/*.log
+backend/storage/uploads/*
+!backend/storage/uploads/.gitkeep
+backend/storage/exports/*
+!backend/storage/exports/.gitkeep
+backend/storage/tmp/*
+!backend/storage/tmp/.gitkeep
+docker/mysql/data
+*.md

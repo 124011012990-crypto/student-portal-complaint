@@ -1,0 +1,213 @@
+/* CampusCare Modern Design System Variables & Theming */
+
+:root {
+  /* Brand Primary Colors */
+  --color-primary: #1e3a8a;          /* Deep Navy */
+  --color-primary-hover: #1d4ed8;    /* Royal Blue */
+  --color-primary-light: #eff6ff;    /* Soft Ice Blue */
+  --color-primary-subtle: #dbeafe;
+
+  --color-accent: #4f46e5;           /* Indigo Accent */
+  --color-accent-hover: #4338ca;
+  --color-accent-light: #eef2ff;
+
+  /* Surfaces & Backgrounds (Light Theme) */
+  --color-bg: #f8fafc;               /* Slate-50 page canvas */
+  --color-surface: #ffffff;          /* Card / Modal surface */
+  --color-surface-hover: #f1f5f9;    /* Hover surface */
+  --color-surface-active: #e2e8f0;
+
+  /* Sidebar (Light Theme) - Clean, premium white sidebar */
+  --color-sidebar: #ffffff;          /* Crisp White Sidebar in Light Theme */
+  --color-sidebar-text: #334155;     /* Slate-700 - high contrast and readability */
+  --color-sidebar-hover: #f1f5f9;    /* Slate-100 */
+  --color-sidebar-hover-text: #0f172a; /* Slate-900 */
+  --color-sidebar-active: #eff6ff;   /* Soft Blue-50 */
+  --color-sidebar-active-text: #1d4ed8; /* Royal Blue */
+  --color-sidebar-border: #e2e8f0;   /* Clean subtle border */
+  --color-sidebar-footer: #f8fafc;   /* Subtle footer area */
+
+  /* Header & Navbar */
+  --color-header-bg: #ffffff;
+  --color-header-border: #e2e8f0;
+
+  /* Text Colors */
+  --color-text-main: #0f172a;        /* High contrast primary text */
+  --color-text-muted: #64748b;       /* Secondary body text */
+  --color-text-light: #94a3b8;       /* Subtle hints / timestamps */
+  --color-border: #e2e8f0;           /* Clean soft borders */
+  --color-border-hover: #cbd5e1;
+  --color-border-focus: #3b82f6;
+
+  /* Semantic Status Tokens (Light) */
+  --color-success: #10b981;          /* Resolved / Success */
+  --color-success-bg: #ecfdf5;
+  --color-success-border: #a7f3d0;
+  --color-success-text: #065f46;
+
+  --color-warning: #f59e0b;          /* Pending / Under Review */
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-warning-text: #92400e;
+
+  --color-info: #0284c7;             /* Assigned / In Progress */
+  --color-info-bg: #f0f9ff;
+  --color-info-border: #bae6fd;
+  --color-info-text: #0369a1;
+
+  --color-danger: #ef4444;           /* High / Urgent / Error */
+  --color-danger-bg: #fef2f2;
+  --color-danger-border: #fecaca;
+  --color-danger-text: #991b1b;
+
+  --color-neutral: #64748b;          /* Closed / Archived */
+  --color-neutral-bg: #f1f5f9;
+  --color-neutral-border: #cbd5e1;
+  --color-neutral-text: #334155;
+
+  /* Typography */
+  --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+
+  /* Border Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+
+  /* Layout dimensions */
+  --sidebar-width: 260px;
+  --header-height: 70px;
+  --max-content-width: 1400px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   DARK THEME PALETTE
+   Activated when [data-theme="dark"] is applied to <html>
+   ========================================================================== */
+[data-theme="dark"] {
+  /* Surfaces & Backgrounds (Dark Theme) */
+  --color-bg: #090e1a;               /* Deep Premium Midnight Navy */
+  --color-surface: #111a2e;          /* Layered Navy Surface */
+  --color-surface-hover: #17233d;    /* Hover Surface */
+  --color-surface-active: #1e2e4f;
+
+  /* Sidebar (Dark Theme) - Midnight Navy matching dark theme */
+  --color-sidebar: #0d1527;          /* Midnight Navy Sidebar */
+  --color-sidebar-text: #94a3b8;     /* Slate-400 */
+  --color-sidebar-hover: #17233d;    /* Navy-800 */
+  --color-sidebar-hover-text: #f8fafc; /* Slate-50 */
+  --color-sidebar-active: rgba(37, 99, 235, 0.22); /* Glowing Blue tint */
+  --color-sidebar-active-text: #60a5fa; /* Vibrant Blue */
+  --color-sidebar-border: #1e293b;
+  --color-sidebar-footer: #090e1a;
+
+  /* Header & Navbar */
+  --color-header-bg: #0d1527;
+  --color-header-border: #1e293b;
+
+  /* Text Colors */
+  --color-text-main: #f8fafc;        /* High contrast crisp white/slate-50 */
+  --color-text-muted: #94a3b8;       /* Legible muted body text */
+  --color-text-light: #64748b;
+  --color-border: #334155;           /* Distinct dark border */
+  --color-border-hover: #475569;
+  --color-border-focus: #60a5fa;
+
+  /* Brand Adjustments for Dark Mode */
+  --color-primary: #3b82f6;          /* Brighter Blue for Dark Mode */
+  --color-primary-hover: #60a5fa;
+  --color-primary-light: #1e3a8a33;  /* Translucent Blue */
+  --color-primary-subtle: #1e40af44;
+
+  --color-accent: #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-accent-light: #4338ca33;
+
+  /* Semantic Status Tokens (Dark Mode) */
+  --color-success: #34d399;
+  --color-success-bg: rgba(6, 78, 59, 0.35);
+  --color-success-border: #059669;
+  --color-success-text: #6ee7b7;
+
+  --color-warning: #fbbf24;
+  --color-warning-bg: rgba(120, 53, 15, 0.35);
+  --color-warning-border: #d97706;
+  --color-warning-text: #fde68a;
+
+  --color-info: #38bdf8;
+  --color-info-bg: rgba(12, 74, 110, 0.35);
+  --color-info-border: #0284c7;
+  --color-info-text: #7dd3fc;
+
+  --color-danger: #f87171;
+  --color-danger-bg: rgba(127, 29, 29, 0.35);
+  --color-danger-border: #dc2626;
+  --color-danger-text: #fca5a5;
+
+  --color-neutral: #94a3b8;
+  --color-neutral-bg: rgba(51, 65, 85, 0.4);
+  --color-neutral-border: #475569;
+  --color-neutral-text: #cbd5e1;
+
+  /* Dark Shadows */
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* Smooth Theme Transitions */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background-color var(--transition-normal),
+              border-color var(--transition-normal),
+              color var(--transition-normal) !important;
+}
+
+/* Reduced Motion Preference Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

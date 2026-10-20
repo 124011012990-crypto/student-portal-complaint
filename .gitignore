@@ -1,0 +1,35 @@
+# Environment variables
+.env
+.env.local
+.env.production
+backend/.env
+backend/.env.local
+
+# Vendor and dependencies
+vendor/
+node_modules/
+
+# Storage files and uploads
+backend/storage/logs/*.log
+backend/storage/uploads/*
+!backend/storage/uploads/.gitkeep
+backend/storage/exports/*
+!backend/storage/exports/.gitkeep
+backend/storage/tmp/*
+!backend/storage/tmp/.gitkeep
+backend/storage/private/*
+!backend/storage/private/.gitkeep
+
+# IDE and OS files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Docker persistence
+docker/mysql/data/

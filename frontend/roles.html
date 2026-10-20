@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roles & Access Permissions — CampusCare</title>
+  <script>(function(){const t=localStorage.getItem('campuscare_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="app-sidebar" class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation drawer"><span data-icon="menu" data-icon-size="20"></span></button>
+          <nav class="breadcrumbs">
+            <a href="dashboard.html">Dashboard</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Roles & Permissions</span>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <button class="btn btn-ghost btn-sm" data-action="logout"><span data-icon="log-out" data-icon-size="16"></span> Logout</button>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <div class="page-header" style="margin-bottom:var(--space-6);">
+          <div class="page-title-group">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <span class="badge" style="background:var(--color-primary-light); color:var(--color-primary); font-size:0.75rem; font-weight:700;">Security Governance</span>
+              <span class="badge" style="background:var(--color-surface-hover); color:var(--color-text-muted); font-size:0.7rem;">RBAC Policy Engine v2.4</span>
+            </div>
+            <h2>Role-Based Access Control (RBAC) & Permissions</h2>
+            <p class="page-subtitle">Configure granular role capabilities, module authorities, and review the live cross-role compliance matrix.</p>
+          </div>
+        </div>
+
+        <!-- Role Selector Tabs -->
+        <div style="margin-bottom:var(--space-6);">
+          <div style="font-size:var(--font-size-xs); font-weight:var(--font-weight-bold); text-transform:uppercase; letter-spacing:0.05em; color:var(--color-text-muted); margin-bottom:var(--space-2);">Select Portal Role to Configure</div>
+          <div id="role-tabs-container" style="display:flex; flex-wrap:wrap; gap:var(--space-3);">
+            <!-- Dynamic role tabs populated by roles.js -->
+            <div class="spinner" style="width:18px; height:18px;"></div>
+          </div>
+        </div>
+
+        <!-- Dynamic Role Permissions Editor Card -->
+        <div id="rbac-manager-container">
+          <!-- Populated by roles.js -->
+        </div>
+
+        <!-- Role Archetypes Overview -->
+        <div style="margin-bottom:var(--space-6);">
+          <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:var(--space-4);">Institutional Role Archetypes</h3>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:var(--space-5);">
+            <div class="card" style="border-top:4px solid #3b82f6;">
+              <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                <span data-icon="user" data-icon-size="18" style="color:#3b82f6;"></span>
+                <h4 style="font-size:1rem; font-weight:700; margin:0;">Student</h4>
+              </div>
+              <p style="font-size:0.85rem; color:var(--color-text-muted); line-height:1.5; margin:0;">Submits grievances, uploads evidence, tracks personal cases, posts responses, and rates redressal satisfaction.</p>
+            </div>
+
+            <div class="card" style="border-top:4px solid #10b981;">
+              <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                <span data-icon="users" data-icon-size="18" style="color:#10b981;"></span>
+                <h4 style="font-size:1rem; font-weight:700; margin:0;">Faculty / Staff</h4>
+              </div>
+              <p style="font-size:0.85rem; color:var(--color-text-muted); line-height:1.5; margin:0;">Investigates complaints assigned to them, adds progress updates, updates status to In Progress, and posts public responses.</p>
+            </div>
+
+            <div class="card" style="border-top:4px solid #8b5cf6;">
+              <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                <span data-icon="clipboard-list" data-icon-size="18" style="color:#8b5cf6;"></span>
+                <h4 style="font-size:1rem; font-weight:700; margin:0;">Department HOD</h4>
+              </div>
+              <p style="font-size:0.85rem; color:var(--color-text-muted); line-height:1.5; margin:0;">Oversees department cases, assigns cases to faculty, records internal notes, and monitors department SLA performance.</p>
+            </div>
+
+            <div class="card" style="border-top:4px solid #f59e0b;">
+              <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                <span data-icon="shield" data-icon-size="18" style="color:#f59e0b;"></span>
+                <h4 style="font-size:1rem; font-weight:700; margin:0;">Grievance Officer</h4>
+              </div>
+              <p style="font-size:0.85rem; color:var(--color-text-muted); line-height:1.5; margin:0;">Central investigative authority. Full access to all standard and confidential grievances. Marks official resolutions.</p>
+            </div>
+
+            <div class="card" style="border-top:4px solid #ef4444;">
+              <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                <span data-icon="settings" data-icon-size="18" style="color:#ef4444;"></span>
+                <h4 style="font-size:1rem; font-weight:700; margin:0;">System Administrator</h4>
+              </div>
+              <p style="font-size:0.85rem; color:var(--color-text-muted); line-height:1.5; margin:0;">Manages user accounts, system configuration, categories, and audit logs. Configures RBAC permissions.</p>
+            </div>
+
+            <div class="card" style="border-top:4px solid #64748b;">
+              <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                <span data-icon="file-text" data-icon-size="18" style="color:#64748b;"></span>
+                <h4 style="font-size:1rem; font-weight:700; margin:0;">Quality Auditor</h4>
+              </div>
+              <p style="font-size:0.85rem; color:var(--color-text-muted); line-height:1.5; margin:0;">Read-only compliance auditor. Inspects non-confidential reports, resolution timelines, and system audit trails.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Authoritative Capability Matrix Table -->
+        <div class="card" style="padding:0; overflow:hidden;">
+          <div class="card-header" style="padding:var(--space-5) var(--space-6); margin:0;">
+            <div>
+              <h3 class="card-title">Live Cross-Role Capability Matrix</h3>
+              <p style="font-size:var(--font-size-xs); color:var(--color-text-muted); margin-top:2px;">Authoritative permission map evaluated in real time from database policies</p>
+            </div>
+          </div>
+
+          <div class="table-responsive" style="border:none; box-shadow:none;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Permission / Capability</th>
+                  <th style="text-align:center;">Student</th>
+                  <th style="text-align:center;">Faculty</th>
+                  <th style="text-align:center;">HOD</th>
+                  <th style="text-align:center;">Officer</th>
+                  <th style="text-align:center;">Admin</th>
+                  <th style="text-align:center;">Auditor</th>
+                </tr>
+              </thead>
+              <tbody id="live-capabilities-tbody">
+                <tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--color-text-muted);">Loading capability matrix...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="assets/js/footer.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/roles.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      rolesManager.init();
+    });
+  </script>
+</body>
+</html>

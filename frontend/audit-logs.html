@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Audit Logs — CampusCare</title>
+  <script>(function(){const t=localStorage.getItem('campuscare_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="app-sidebar" class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation drawer"><span data-icon="menu" data-icon-size="20"></span></button>
+          <nav class="breadcrumbs">
+            <a href="dashboard.html">Dashboard</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Audit Logs</span>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <button class="btn btn-ghost btn-sm" data-action="logout"><span data-icon="log-out" data-icon-size="16"></span> Logout</button>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <div class="page-header">
+          <div class="page-title-group">
+            <h2>System Audit & Security Logs</h2>
+            <p class="page-subtitle">Immutable chronological record of administrative actions, status updates, logins, and assignments.</p>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="search-input-group">
+            <span class="search-icon"><span data-icon="search" data-icon-size="16"></span></span>
+            <input type="text" id="audit-action-search" class="form-control search-input" placeholder="Search by action (e.g. LOGIN, ASSIGN, STATUS)...">
+          </div>
+
+          <div class="filter-controls">
+            <select id="audit-entity-filter" class="form-control" style="width:auto;">
+              <option value="">All Entities</option>
+              <option value="complaint">Complaints</option>
+              <option value="user">Users</option>
+              <option value="system">System</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Audit Table Card -->
+        <div class="card" style="padding:0; overflow:hidden;">
+          <div class="table-responsive" style="border:none; box-shadow:none;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Action</th>
+                  <th>User / Role</th>
+                  <th>Entity & ID</th>
+                  <th>Details</th>
+                  <th>Client IP</th>
+                </tr>
+              </thead>
+              <tbody id="audit-tbody">
+                <tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--color-text-muted);">Loading audit logs...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+            <div id="audit-pagination-info" style="font-size:var(--font-size-xs); color:var(--color-text-muted);">Showing records</div>
+            <div id="audit-pagination-container" class="page-numbers"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="assets/js/footer.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    let currentAuditPage = 1;
+
+    async function loadAuditLogs(page = 1) {
+      currentAuditPage = page;
+      const action = document.getElementById('audit-action-search').value.trim();
+      const entity = document.getElementById('audit-entity-filter').value;
+      const tbody = document.getElementById('audit-tbody');
+
+      try {
+        const res = await api.get('/audit-logs', { page, per_page: 25, action, entity_type: entity });
+        const logs = res.data && res.data.data ? res.data.data : [];
+        const total = res.data ? res.data.total : 0;
+
+        if (logs.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--color-text-muted);">No audit events found.</td></tr>`;
+          renderAuditPagination(0, 1);
+          return;
+        }
+
+        tbody.innerHTML = logs.map(l => `
+          <tr>
+            <td style="color:var(--color-text-muted); font-size:var(--font-size-xs); font-family:var(--font-mono);">${app.formatDate(l.created_at)}</td>
+            <td><strong style="color:var(--color-primary); font-family:var(--font-mono); font-size:var(--font-size-xs);">${l.action}</strong></td>
+            <td>
+              <div style="font-weight:500;">${l.full_name || 'System / Unauth'}</div>
+              <div style="font-size:var(--font-size-xs); color:var(--color-text-muted);">${l.role_name || ''}</div>
+            </td>
+            <td><span class="badge" style="background:#f1f5f9; color:#475569;">${l.entity_type} #${l.entity_id || 'N/A'}</span></td>
+            <td style="font-size:var(--font-size-xs); color:var(--color-text-main);">${l.details || ''}</td>
+            <td style="color:var(--color-text-muted); font-size:var(--font-size-xs); font-family:var(--font-mono);">${l.ip_address}</td>
+          </tr>
+        `).join('');
+
+        renderAuditPagination(total, page);
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--color-danger); padding:2rem;">Failed to load audit trail: ${e.message}</td></tr>`;
+      }
+    }
+
+    function renderAuditPagination(total, current) {
+      const container = document.getElementById('audit-pagination-container');
+      const info = document.getElementById('audit-pagination-info');
+      const totalPages = Math.ceil(total / 25) || 1;
+
+      info.textContent = `Showing ${total === 0 ? 0 : (current - 1) * 25 + 1}-${Math.min(current * 25, total)} of ${total} events`;
+
+      let btns = '';
+      for (let p = 1; p <= totalPages; p++) {
+        btns += `<button class="page-btn ${p === current ? 'active' : ''}" onclick="loadAuditLogs(${p})">${p}</button>`;
+      }
+      container.innerHTML = btns;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = await auth.requireAuth(['admin', 'auditor']);
+      if (!user) return;
+
+      await app.initLayout('audit-logs');
+
+      let timer;
+      document.getElementById('audit-action-search').addEventListener('input', () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => loadAuditLogs(1), 350);
+      });
+
+      document.getElementById('audit-entity-filter').addEventListener('change', () => loadAuditLogs(1));
+
+      loadAuditLogs(1);
+    });
+  </script>
+</body>
+</html>

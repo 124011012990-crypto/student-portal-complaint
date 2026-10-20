@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications — CampusCare</title>
+  <script>(function(){const t=localStorage.getItem('campuscare_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="app-sidebar" class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation drawer"><span data-icon="menu" data-icon-size="20"></span></button>
+          <nav class="breadcrumbs">
+            <a href="dashboard.html">Dashboard</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Notifications</span>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <button class="btn btn-ghost btn-sm" data-action="logout"><span data-icon="log-out" data-icon-size="16"></span> Logout</button>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <div class="page-header">
+          <div class="page-title-group">
+            <h2>In-App Notification Center</h2>
+            <p class="page-subtitle">Track timely alerts for case assignments, status advancements, and officer responses.</p>
+          </div>
+          <div class="page-actions">
+            <button id="btn-mark-all-read" class="btn btn-secondary">
+              <span data-icon="check" data-icon-size="16"></span> Mark All as Read
+            </button>
+          </div>
+        </div>
+
+        <div class="card" style="padding:0; overflow:hidden; max-width:860px; margin:0 auto;">
+          <div id="notifications-list" style="display:flex; flex-direction:column;">
+            <div style="padding:2rem; text-align:center; color:var(--color-text-muted);">Loading notifications...</div>
+          </div>
+
+          <div id="notifications-empty" class="empty-state" style="display:none;">
+            <div class="empty-icon"><span data-icon="bell" data-icon-size="36"></span></div>
+            <h4 class="empty-title">You're completely caught up!</h4>
+            <p class="empty-desc">No unread alerts or recent case updates.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="assets/js/footer.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    async function loadNotifications() {
+      const container = document.getElementById('notifications-list');
+      const emptyState = document.getElementById('notifications-empty');
+
+      try {
+        const res = await api.get('/notifications', { limit: 50 });
+        const list = res.data && res.data.notifications ? res.data.notifications : [];
+
+        if (list.length === 0) {
+          container.innerHTML = '';
+          emptyState.style.display = 'flex';
+          return;
+        }
+
+        emptyState.style.display = 'none';
+        container.innerHTML = list.map(n => `
+          <div style="display:flex; align-items:flex-start; gap:1rem; padding:1.25rem 1.5rem; border-bottom:1px solid var(--color-border); background:${n.is_read ? 'var(--color-surface)' : 'var(--color-surface-hover)'}; cursor:pointer; transition:background 0.2s;" onclick="handleNotificationClick(${n.id}, '${n.link || ''}')">
+            <div style="padding-top:2px; color:var(--color-primary);">
+              ${n.type === 'success' ? Icons.create('check-circle-2', 20) : (n.type === 'warning' ? Icons.create('alert-triangle', 20) : Icons.create('info', 20))}
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.25rem;">
+                <strong style="color:var(--color-text-main); font-size:var(--font-size-sm);">${n.title}</strong>
+                <span style="font-size:var(--font-size-xs); color:var(--color-text-light);">${app.formatDate(n.created_at)}</span>
+              </div>
+              <p style="font-size:var(--font-size-sm); color:var(--color-text-muted); line-height:1.5;">${n.message}</p>
+            </div>
+            ${!n.is_read ? '<span style="width:8px; height:8px; border-radius:999px; background:#3b82f6; align-self:center;"></span>' : ''}
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--color-danger);">Failed to load notifications: ${err.message}</div>`;
+      }
+    }
+
+    async function handleNotificationClick(id, link) {
+      await notifications.markSingleRead(id);
+      if (link) {
+        window.location.href = link;
+      } else {
+        loadNotifications();
+      }
+    }
+
+    document.getElementById('btn-mark-all-read').addEventListener('click', async () => {
+      await notifications.markAllRead();
+      app.showToast('All notifications marked as read', 'success');
+      loadNotifications();
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = await auth.requireAuth();
+      if (!user) return;
+      await app.initLayout('notifications');
+      loadNotifications();
+    });
+  </script>
+</body>
+</html>

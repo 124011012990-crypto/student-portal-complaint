@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile — CampusCare</title>
+  <script>(function(){const t=localStorage.getItem('campuscare_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="app-sidebar" class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation drawer"><span data-icon="menu" data-icon-size="20"></span></button>
+          <nav class="breadcrumbs">
+            <a href="dashboard.html">Dashboard</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">My Profile</span>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <a href="notifications.html" class="header-action-btn" title="Notifications">
+            <span data-icon="bell" data-icon-size="18"></span>
+            <span id="notif-bubble" class="notif-bubble" style="display:none;">0</span>
+          </a>
+          <button class="btn btn-ghost btn-sm" data-action="logout"><span data-icon="log-out" data-icon-size="16"></span> Logout</button>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <div class="page-header">
+          <div class="page-title-group">
+            <h2>Account Profile & Security</h2>
+            <p class="page-subtitle">Manage personal contact details and update portal security password.</p>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap:var(--space-8); max-width:1000px; margin:0 auto;">
+          <!-- Profile Information Card -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">User Information</h3>
+              <span id="profile-role-badge" class="badge badge-assigned"></span>
+            </div>
+
+            <form id="profile-form">
+              <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" id="profile-username" class="form-control" disabled style="background:var(--color-surface-hover); cursor:not-allowed;">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Institutional Email</label>
+                <input type="email" id="profile-email" class="form-control" disabled style="background:var(--color-surface-hover); cursor:not-allowed;">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Department / Faculty</label>
+                <input type="text" id="profile-dept" class="form-control" disabled style="background:var(--color-surface-hover); cursor:not-allowed;">
+              </div>
+
+              <div id="roll-number-group" class="form-group" style="display:none;">
+                <label class="form-label">Student Roll Number</label>
+                <input type="text" id="profile-roll" class="form-control" disabled style="background:var(--color-surface-hover); cursor:not-allowed;">
+              </div>
+
+              <div class="form-group">
+                <label for="profile-name" class="form-label">Full Name <span class="required">*</span></label>
+                <input type="text" id="profile-name" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label for="profile-phone" class="form-label">Contact Phone</label>
+                <input type="tel" id="profile-phone" class="form-control" placeholder="+91 98765 00000">
+              </div>
+
+              <div style="margin-top:1.5rem;">
+                <button type="submit" id="btn-save-profile" class="btn btn-primary">Save Profile Changes</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Change Password Card -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Change Password</h3>
+            </div>
+
+            <form id="password-form">
+              <div class="form-group">
+                <label for="current_password" class="form-label">Current Password <span class="required">*</span></label>
+                <input type="password" id="current_password" class="form-control" required autocomplete="current-password">
+              </div>
+
+              <div class="form-group">
+                <label for="new_password" class="form-label">New Password <span class="required">*</span></label>
+                <input type="password" id="new_password" class="form-control" required minlength="8" autocomplete="new-password">
+                <span class="form-hint">Must be at least 8 characters long.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="confirm_password" class="form-label">Confirm New Password <span class="required">*</span></label>
+                <input type="password" id="confirm_password" class="form-control" required minlength="8" autocomplete="new-password">
+              </div>
+
+              <div style="margin-top:1.5rem;">
+                <button type="submit" id="btn-save-password" class="btn btn-primary">Update Password</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="assets/js/footer.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = await auth.requireAuth();
+      if (!user) return;
+
+      await app.initLayout('profile');
+
+      // Populate user fields
+      document.getElementById('profile-username').value = user.username || '';
+      document.getElementById('profile-email').value = user.email || '';
+      document.getElementById('profile-dept').value = user.department_name ? `${user.department_name} (${user.department_code})` : 'Administrative';
+      document.getElementById('profile-name').value = user.full_name || '';
+      document.getElementById('profile-phone').value = user.phone || '';
+      document.getElementById('profile-role-badge').textContent = user.role_name;
+
+      if (user.roll_number) {
+        document.getElementById('roll-number-group').style.display = 'block';
+        document.getElementById('profile-roll').value = user.roll_number;
+      }
+
+      // Profile form submission
+      document.getElementById('profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fullName = document.getElementById('profile-name').value.trim();
+        const phone = document.getElementById('profile-phone').value.trim();
+
+        try {
+          await api.post('/auth/profile', { full_name: fullName, phone });
+          app.showToast('Profile information updated successfully', 'success');
+        } catch (err) {
+          app.showToast('Failed to update profile: ' + err.message, 'error');
+        }
+      });
+
+      // Password form submission
+      document.getElementById('password-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const cur = document.getElementById('current_password').value;
+        const n1 = document.getElementById('new_password').value;
+        const n2 = document.getElementById('confirm_password').value;
+
+        if (n1 !== n2) {
+          app.showToast('New passwords do not match.', 'error');
+          return;
+        }
+
+        try {
+          await api.post('/auth/change-password', {
+            current_password: cur,
+            new_password: n1
+          });
+          app.showToast('Password updated successfully', 'success');
+          document.getElementById('password-form').reset();
+        } catch (err) {
+          app.showToast('Password change failed: ' + err.message, 'error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

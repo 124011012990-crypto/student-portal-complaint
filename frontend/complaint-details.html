@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grievance Details — CampusCare</title>
+  <script>(function(){const t=localStorage.getItem('campuscare_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="app-sidebar" class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation drawer"><span data-icon="menu" data-icon-size="20"></span></button>
+          <nav class="breadcrumbs">
+            <a href="dashboard.html">Dashboard</a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="complaints.html">Grievances</a>
+            <span class="breadcrumb-separator">/</span>
+            <span id="detail-ref" class="breadcrumb-current">Loading...</span>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <a href="notifications.html" class="header-action-btn" title="Notifications">
+            <span data-icon="bell" data-icon-size="18"></span>
+            <span id="notif-bubble" class="notif-bubble" style="display:none;">0</span>
+          </a>
+          <button class="btn btn-ghost btn-sm" data-action="logout"><span data-icon="log-out" data-icon-size="16"></span> Logout</button>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <!-- Page Title & Top Actions -->
+        <div class="page-header">
+          <div class="page-title-group">
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+              <span id="detail-priority-badge"></span>
+              <span id="detail-status-badge"></span>
+              <span id="detail-conf-badge"></span>
+            </div>
+            <h2 id="detail-title" style="margin-top:0.25rem;">Loading grievance title...</h2>
+            <p class="page-subtitle">
+              Submitted on <span id="detail-created"></span> • Target SLA Due: <span id="detail-due" style="font-weight:600;"></span>
+            </p>
+          </div>
+
+          <div class="page-actions">
+            <button id="btn-open-status-modal" class="btn btn-primary" onclick="document.getElementById('status-modal-overlay').classList.add('open')">
+              <span data-icon="refresh-cw" data-icon-size="16"></span> Update Status
+            </button>
+            <button id="btn-open-assign-modal" class="btn btn-secondary" onclick="document.getElementById('assign-modal-overlay').classList.add('open')">
+              <span data-icon="user" data-icon-size="16"></span> Reassign
+            </button>
+            <button id="btn-open-feedback-modal" class="btn btn-success" style="display:none;" onclick="document.getElementById('feedback-modal-overlay').classList.add('open')">
+              <span data-icon="star" data-icon-size="16"></span> Resolution Feedback
+            </button>
+            <button id="btn-delete-complaint" class="btn btn-danger btn-sm" style="display:none;">
+              <span data-icon="trash-2" data-icon-size="16"></span> Delete
+            </button>
+          </div>
+        </div>
+
+        <!-- Two Column Content Grid -->
+        <div class="details-layout">
+          <!-- Left Main Column -->
+          <div style="display:flex; flex-direction:column; gap:var(--space-6);">
+            <!-- Grievance Description Card -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Grievance Description</h3>
+                <span id="detail-category" class="badge" style="background:#eff6ff; color:#1d4ed8;"></span>
+              </div>
+              <div id="detail-description" style="line-height:1.7; color:var(--color-text-main); white-space:pre-wrap; font-size:var(--font-size-sm);"></div>
+
+              <!-- Attachments Section -->
+              <div style="margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--color-border);">
+                <div style="font-size:var(--font-size-xs); font-weight:var(--font-weight-bold); text-transform:uppercase; color:var(--color-text-muted); margin-bottom:0.75rem;">
+                  Evidence & Supporting Attachments
+                </div>
+                <div id="detail-attachments-list"></div>
+              </div>
+            </div>
+
+            <!-- Resolution Summary Card (if present) -->
+            <div id="resolution-summary-box" class="card" style="display:none; border-left:4px solid var(--color-success); background:#f0fdf4;">
+              <div class="card-header" style="border-bottom:1px solid #bbf7d0;">
+                <h3 class="card-title" style="color:var(--color-success-text);">Official Resolution Summary</h3>
+                <span id="detail-resolved-at" style="font-size:var(--font-size-xs); color:var(--color-success-text);"></span>
+              </div>
+              <p id="detail-resolution-text" style="font-size:var(--font-size-sm); color:#166534; line-height:1.6;"></p>
+            </div>
+
+            <!-- Comments & Discussion Feed -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Responses & Conversation Thread</h3>
+                  <p style="font-size:var(--font-size-xs); color:var(--color-text-muted);">Direct communication between student and investigating staff</p>
+                </div>
+              </div>
+
+              <div id="detail-comments-container" class="comment-feed"></div>
+
+              <!-- Post Comment Box -->
+              <form id="comment-form" style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--color-border);">
+                <div class="form-group">
+                  <textarea id="comment-input" class="form-control" style="min-height:90px;" placeholder="Add an official response or query..." required></textarea>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                  <label id="comment-internal-toggle" style="display:none; align-items:center; gap:0.5rem; font-size:var(--font-size-xs); color:#b45309; cursor:pointer;">
+                    <input type="checkbox" id="comment-is-internal">
+                    <span data-icon="lock" data-icon-size="14"></span> Record as confidential officer-only internal note
+                  </label>
+                  <button type="submit" class="btn btn-primary btn-sm" style="margin-left:auto;">
+                    Post Message
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Right Sidebar Metadata Column -->
+          <div style="display:flex; flex-direction:column; gap:var(--space-6);">
+            <!-- Case Ownership & Department Card -->
+            <div class="card">
+              <h3 class="card-title" style="font-size:1rem; margin-bottom:1rem; border-bottom:1px solid var(--color-border); padding-bottom:0.5rem;">Case Metadata</h3>
+
+              <div style="display:flex; flex-direction:column; gap:0.85rem; font-size:var(--font-size-xs);">
+                <div>
+                  <div style="color:var(--color-text-muted); font-weight:var(--font-weight-medium);">Responsible Department</div>
+                  <div id="detail-department" style="font-weight:600; color:var(--color-text-main); font-size:var(--font-size-sm); margin-top:2px;"></div>
+                </div>
+
+                <div>
+                  <div style="color:var(--color-text-muted); font-weight:var(--font-weight-medium);">Investigating Officer / Staff</div>
+                  <div id="detail-assigned-to" style="font-weight:600; color:var(--color-primary); font-size:var(--font-size-sm); margin-top:2px;"></div>
+                </div>
+
+                <div style="padding-top:0.5rem; border-top:1px solid var(--color-border);">
+                  <div style="color:var(--color-text-muted); font-weight:var(--font-weight-medium);">Reporting Student</div>
+                  <div id="detail-student-name" style="font-weight:600; color:var(--color-text-main); margin-top:2px;"></div>
+                  <div style="color:var(--color-text-muted);">Roll No: <span id="detail-student-roll"></span></div>
+                  <div style="color:var(--color-text-muted);"><span id="detail-student-email"></span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status Transition History Timeline -->
+            <div class="card">
+              <h3 class="card-title" style="font-size:1rem; margin-bottom:0.75rem;">Audit & Status History</h3>
+              <div id="detail-timeline" class="timeline"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Update Status -->
+  <div id="status-modal-overlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Update Case Status</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('status-modal-overlay').classList.remove('open')">✕</button>
+      </div>
+      <form id="status-update-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="modal-status-select" class="form-label">New Workflow Status <span class="required">*</span></label>
+            <select id="modal-status-select" class="form-control" required>
+              <option value="Under Review">Under Review</option>
+              <option value="Assigned">Assigned</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+              <option value="Closed">Closed</option>
+              <option value="Escalated">Escalated</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-status-reason" class="form-label">Action Reason / Justification</label>
+            <input type="text" id="modal-status-reason" class="form-control" placeholder="Brief note explaining reason for state change">
+          </div>
+
+          <div class="form-group">
+            <label for="modal-status-summary" class="form-label">Resolution Summary (Required if marking Resolved/Closed)</label>
+            <textarea id="modal-status-summary" class="form-control" style="min-height:90px;" placeholder="Explain steps taken, repairs completed, or conclusions reached..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('status-modal-overlay').classList.remove('open')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Status Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Reassign Case -->
+  <div id="assign-modal-overlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Reassign Grievance</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('assign-modal-overlay').classList.remove('open')">✕</button>
+      </div>
+      <form id="assign-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="modal-assign-staff" class="form-label">Assign to Officer or Faculty Member</label>
+            <select id="modal-assign-staff" class="form-control">
+              <option value="">-- Choose Staff Member --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-assign-dept" class="form-label">Responsible Department</label>
+            <select id="modal-assign-dept" class="form-control">
+              <option value="">-- Choose Department --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-assign-note" class="form-label">Assignment Instructions / Note</label>
+            <textarea id="modal-assign-note" class="form-control" placeholder="Specific investigation guidance or request for technician inspection..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('assign-modal-overlay').classList.remove('open')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Resolution Feedback / Reopen -->
+  <div id="feedback-modal-overlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Student Resolution Feedback</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('feedback-modal-overlay').classList.remove('open')">✕</button>
+      </div>
+      <form id="feedback-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="modal-feedback-rating" class="form-label">Resolution Satisfaction Rating <span class="required">*</span></label>
+            <select id="modal-feedback-rating" class="form-control" required>
+              <option value="5">⭐⭐⭐⭐⭐ 5 - Highly Satisfied with Resolution</option>
+              <option value="4" selected>⭐⭐⭐⭐ 4 - Satisfied</option>
+              <option value="3">⭐⭐⭐ 3 - Neutral</option>
+              <option value="2">⭐⭐ 2 - Dissatisfied</option>
+              <option value="1">⭐ 1 - Very Dissatisfied</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-feedback-comments" class="form-label">Student Feedback Comments</label>
+            <textarea id="modal-feedback-comments" class="form-control" placeholder="Share your experience regarding the redressal timeliness and quality..."></textarea>
+          </div>
+
+          <div class="form-group" style="background:var(--color-danger-bg); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--color-danger-border);">
+            <label style="display:flex; align-items:center; gap:0.5rem; font-weight:600; color:var(--color-danger-text); cursor:pointer;">
+              <input type="checkbox" id="modal-feedback-reopen">
+              Request Case Reopening (Issue Not Actually Fixed)
+            </label>
+            <input type="text" id="modal-feedback-reopen-reason" class="form-control" style="margin-top:0.5rem;" placeholder="Explain specifically why the resolution was inadequate">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('feedback-modal-overlay').classList.remove('open')">Cancel</button>
+          <button type="submit" class="btn btn-success">Submit Feedback</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="assets/js/footer.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/complaints.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      complaints.initDetails();
+    });
+  </script>
+</body>
+</html>

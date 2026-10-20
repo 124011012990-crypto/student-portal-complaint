@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In & Account Access — CampusCare Portal</title>
+  <script>(function(){const t=localStorage.getItem('campuscare_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <style>
+    /* Premium High-End Authentication Experience */
+    .auth-page {
+      background: radial-gradient(circle at 50% 15%, rgba(6, 182, 212, 0.08) 0%, rgba(30, 58, 138, 0.05) 40%, transparent 70%), var(--color-bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+    [data-theme="dark"] .auth-page {
+      background: radial-gradient(circle at 50% 15%, rgba(6, 182, 212, 0.12) 0%, rgba(30, 58, 138, 0.25) 45%, #090e1a 80%);
+    }
+
+    .auth-card {
+      position: relative;
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--color-border);
+      backdrop-filter: blur(12px);
+    }
+    [data-theme="dark"] .auth-card {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px -10px rgba(6, 182, 212, 0.15);
+    }
+
+    .brand-glow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1.35rem;
+      box-shadow: 0 8px 20px -4px rgba(6, 182, 212, 0.4);
+      margin-bottom: 0.75rem;
+    }
+
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .password-wrapper input {
+      padding-right: 2.75rem;
+      width: 100%;
+    }
+    .password-toggle-btn {
+      position: absolute;
+      right: 0.6rem;
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      transition: color var(--transition-fast);
+    }
+    .password-toggle-btn:hover {
+      color: var(--color-text-main);
+    }
+
+    /* Modal styling */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(9, 14, 26, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-box {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      max-width: 480px;
+      width: 100%;
+      padding: 2rem;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+      transform: translateY(15px);
+      transition: transform 0.25s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-backdrop.active .modal-box {
+      transform: translateY(0);
+    }
+
+    .step-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-surface-hover);
+      color: var(--color-text-muted);
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+    .step-pill.active {
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(2, 132, 199, 0.35);
+    }
+    .step-pill.completed {
+      background: #10b981;
+      color: #ffffff;
+    }
+
+    .otp-display-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.35rem 0.65rem;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: #06b6d4;
+      border-radius: var(--radius-md);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem;">
+      <span class="badge" style="background:rgba(6, 182, 212, 0.12); color:#0284c7; font-weight:700; font-size:0.75rem;">
+        Official Institutional Grievance Redressal
+      </span>
+      <button type="button" class="theme-toggle-btn" id="theme-toggle-button" onclick="ThemeManager.toggle()" title="Toggle theme" style="width:34px; height:34px;"></button>
+    </div>
+
+    <div class="auth-brand" style="margin-bottom:1.5rem;">
+      <div class="brand-glow">CC</div>
+      <h1 style="font-size:1.5rem; font-weight:800; color:var(--color-text-main); margin-bottom:0.25rem; letter-spacing:-0.02em;">
+        Sign in to CampusCare
+      </h1>
+      <p style="font-size:0.85rem; color:var(--color-text-muted); margin:0;">
+        Student grievance redressal & campus administrative governance
+      </p>
+    </div>
+
+    <!-- Error Alert Box (Generic message to prevent account enumeration) -->
+    <div id="login-error-alert" style="display:none; padding:0.75rem 1rem; border-radius:var(--radius-md); background:var(--color-danger-bg); border:1px solid var(--color-danger-border); color:var(--color-danger-text); font-size:0.85rem; margin-bottom:1.25rem;">
+      <span id="login-error-msg"></span>
+    </div>
+
+    <!-- Success Feedback Box -->
+    <div id="login-success-alert" style="display:none; padding:0.75rem 1rem; border-radius:var(--radius-md); background:var(--color-success-bg); border:1px solid var(--color-success-border); color:var(--color-success-text); font-size:0.85rem; margin-bottom:1.25rem;">
+      <span id="login-success-msg"></span>
+    </div>
+
+    <!-- Standard Sign In Form -->
+    <form id="login-form">
+      <div class="form-group" style="margin-bottom:1.1rem;">
+        <label for="username" class="form-label">
+          Institutional Email, Username, or Student ID <span class="required">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="username" 
+          class="form-control" 
+          placeholder="e.g. arun.student@campuscare.edu or 2023CSE042" 
+          required 
+          autocomplete="username"
+          autofocus
+        >
+      </div>
+
+      <div class="form-group" style="margin-bottom:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+          <label for="password" class="form-label" style="margin:0;">Password <span class="required">*</span></label>
+          <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size:0.8rem; color:var(--color-primary); font-weight:600;">
+            Forgot Password?
+          </a>
+        </div>
+        <div class="password-wrapper">
+          <input 
+            type="password" 
+            id="password" 
+            class="form-control" 
+            placeholder="••••••••" 
+            required 
+            autocomplete="current-password"
+          >
+          <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password', this)" title="Show/Hide Password" aria-label="Toggle password visibility">
+            <span data-icon="eye" data-icon-size="18"></span>
+          </button>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; font-size:0.85rem;">
+        <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; color:var(--color-text-muted);">
+          <input type="checkbox" id="remember-me" style="accent-color:var(--color-primary); width:16px; height:16px;">
+          <span>Remember me on this workstation</span>
+        </label>
+      </div>
+
+      <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width:100%; padding:0.8rem; font-weight:700; font-size:0.95rem; border-radius:var(--radius-md);">
+        <span data-icon="lock" data-icon-size="16"></span> Sign In to Portal
+      </button>
+    </form>
+
+    <!-- Student Activation CTA (Replaces Open Public Registration) -->
+    <div style="margin-top:1.5rem; padding:0.9rem 1rem; border-radius:var(--radius-md); background:var(--color-surface-hover); border:1px solid var(--color-border); text-align:center;">
+      <div style="font-size:0.85rem; color:var(--color-text-main); font-weight:600; margin-bottom:0.25rem;">
+        New Enrolled Student?
+      </div>
+      <div style="font-size:0.8rem; color:var(--color-text-muted); margin-bottom:0.6rem;">
+        Public self-registration is closed. Claim your verified student account using your Student ID and college email.
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="openActivationModal()" style="width:100%; font-weight:600;">
+        <span data-icon="shield-check" data-icon-size="15"></span> Activate Student Account
+      </button>
+    </div>
+
+    <!-- Quick Demonstration Logins for instant evaluation of all 6 roles -->
+    <!-- <div class="demo-credentials-box" style="margin-top:1.25rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+        <div class="demo-credentials-title" style="margin:0;">Interactive Demo Logins (6 Roles)</div>
+        <span style="font-size:0.7rem; color:var(--color-text-muted);">Click chip to populate</span>
+      </div>
+      <div class="demo-chips">
+        <button type="button" class="demo-chip" onclick="fillCreds('student_arun', 'Password@123')">Student (Arun)</button>
+        <button type="button" class="demo-chip" onclick="fillCreds('prof_sharma', 'Password@123')">Faculty Staff</button>
+        <button type="button" class="demo-chip" onclick="fillCreds('hod_cse', 'Password@123')">HOD CSE</button>
+        <button type="button" class="demo-chip" onclick="fillCreds('officer', 'Password@123')">Grievance Officer</button>
+        <button type="button" class="demo-chip" onclick="fillCreds('admin', 'Password@123')">Administrator</button>
+        <button type="button" class="demo-chip" onclick="fillCreds('auditor', 'Password@123')">Auditor</button>
+      </div>
+      <div style="font-size:0.72rem; color:var(--color-text-light); margin-top:0.4rem; text-align:center;">
+        Default demo credentials password: <code style="font-family:var(--font-mono); color:var(--color-primary); font-weight:700;">Password@123</code>
+      </div>
+    </div> -->
+
+    <div style="text-align:center; margin-top:1.25rem;">
+      <a href="index.html" style="font-size:0.85rem; color:var(--color-text-muted); display:inline-flex; align-items:center; gap:0.4rem; transition:color 0.15s ease;">
+        <span data-icon="arrow-right" data-icon-size="14" style="transform:rotate(180deg);"></span> Return to Public Homepage
+      </a>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: Controlled Student Account Activation
+       ======================================================== -->
+  <div id="activation-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="step-pill active" id="act-step-pill-1">1</div>
+          <div class="step-pill" id="act-step-pill-2">2</div>
+          <div class="step-pill" id="act-step-pill-3">3</div>
+          <span style="font-size:0.8rem; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; margin-left:6px;" id="act-step-title">
+            Step 1: Student Verification
+          </span>
+        </div>
+        <button type="button" onclick="closeActivationModal()" style="background:none; border:none; cursor:pointer; color:var(--color-text-muted);" aria-label="Close modal">
+          <span data-icon="x" data-icon-size="20"></span>
+        </button>
+      </div>
+
+      <!-- Activation Alert -->
+      <div id="act-alert" style="display:none; padding:0.7rem 0.9rem; border-radius:var(--radius-md); font-size:0.82rem; margin-bottom:1rem;"></div>
+
+      <!-- STEP 1 FORM: Enter Roll Number and College Email -->
+      <form id="act-step1-form">
+        <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:0.25rem;">Verify College Registry</h3>
+        <p style="font-size:0.82rem; color:var(--color-text-muted); margin-bottom:1.2rem;">
+          Enter your official Student Roll Number and registered college email address to verify identity against the university directory.
+        </p>
+
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label for="act-roll" class="form-label">Student ID / Roll Number <span class="required">*</span></label>
+          <input type="text" id="act-roll" class="form-control" placeholder="e.g. 2026CSE099" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label for="act-email" class="form-label">Registered College Email <span class="required">*</span></label>
+          <input type="email" id="act-email" class="form-control" placeholder="e.g. kavya.student@campuscare.edu" required>
+        </div>
+
+        <!-- Quick Demo Registry Fill for Testing Activation -->
+        <div style="margin-bottom:1.25rem; padding:0.6rem 0.8rem; background:var(--color-surface-hover); border-radius:var(--radius-sm); border:1px solid var(--color-border); font-size:0.75rem;">
+          <span style="font-weight:700; color:var(--color-text-main);">Demo Unactivated Registry Student:</span>
+          <a href="javascript:void(0)" onclick="fillDemoActivation('2026CSE099', 'kavya.student@campuscare.edu')" style="color:var(--color-primary); font-weight:600; margin-left:6px;">
+            Click to fill: 2026CSE099 (Kavya Mohan)
+          </a>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeActivationModal()">Cancel</button>
+          <button type="submit" id="btn-act-step1" class="btn btn-primary">
+            Verify & Send Code →
+          </button>
+        </div>
+      </form>
+
+      <!-- STEP 2 FORM: Enter 6-digit OTP -->
+      <form id="act-step2-form" style="display:none;">
+        <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:0.25rem;">Enter Verification Code</h3>
+        <p style="font-size:0.82rem; color:var(--color-text-muted); margin-bottom:1rem;">
+          A single-use 6-digit verification code was sent to <strong id="act-target-email" style="color:var(--color-text-main);"></strong>.
+        </p>
+
+        <div id="act-dev-otp-container" style="display:none; margin-bottom:1rem; padding:0.65rem 0.85rem; background:rgba(6,182,212,0.08); border:1px dashed #06b6d4; border-radius:var(--radius-md);">
+          <div style="font-size:0.75rem; color:var(--color-text-muted); margin-bottom:4px;">Local Dev OTP Preview:</div>
+          <span class="otp-display-badge" id="act-dev-otp-badge"></span>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="copyOtpToInput()" style="margin-left:8px; padding:2px 8px; font-size:0.75rem;">Copy to field</button>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label for="act-otp" class="form-label">6-Digit OTP Code <span class="required">*</span></label>
+          <input type="text" id="act-otp" class="form-control" placeholder="123456" maxlength="6" style="font-family:var(--font-mono); font-size:1.25rem; letter-spacing:0.25em; text-align:center;" required autocomplete="one-time-code">
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="backToActivationStep(1)">← Back</button>
+          <button type="submit" id="btn-act-step2" class="btn btn-primary">
+            Verify OTP →
+          </button>
+        </div>
+      </form>
+
+      <!-- STEP 3 FORM: Set Password & Activate -->
+      <form id="act-step3-form" style="display:none;">
+        <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:0.25rem;">Create Permanent Password</h3>
+        <p style="font-size:0.82rem; color:var(--color-text-muted); margin-bottom:1.2rem;">
+          Identity verified! Create your portal login password (minimum 8 characters).
+        </p>
+
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label for="act-new-pass" class="form-label">Create Password <span class="required">*</span></label>
+          <div class="password-wrapper">
+            <input type="password" id="act-new-pass" class="form-control" placeholder="••••••••" minlength="8" required>
+            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('act-new-pass', this)">
+              <span data-icon="eye" data-icon-size="18"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label for="act-confirm-pass" class="form-label">Confirm Password <span class="required">*</span></label>
+          <input type="password" id="act-confirm-pass" class="form-control" placeholder="••••••••" minlength="8" required>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="submit" id="btn-act-step3" class="btn btn-primary" style="width:100%;">
+            Complete Account Activation
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: Forgot Password Flow
+       ======================================================== -->
+  <div id="forgot-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h3 style="font-size:1.15rem; font-weight:700; margin:0;" id="forgot-title">Reset Password</h3>
+        <button type="button" onclick="closeForgotPasswordModal()" style="background:none; border:none; cursor:pointer; color:var(--color-text-muted);" aria-label="Close modal">
+          <span data-icon="x" data-icon-size="20"></span>
+        </button>
+      </div>
+
+      <div id="forgot-alert" style="display:none; padding:0.7rem 0.9rem; border-radius:var(--radius-md); font-size:0.82rem; margin-bottom:1rem;"></div>
+
+      <!-- STEP 1: Request Reset Code -->
+      <form id="forgot-step1-form">
+        <p style="font-size:0.82rem; color:var(--color-text-muted); margin-bottom:1.2rem;">
+          Enter your registered institutional email or username. A time-limited reset code will be generated.
+        </p>
+
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label for="forgot-identifier" class="form-label">Email or Username <span class="required">*</span></label>
+          <input type="text" id="forgot-identifier" class="form-control" placeholder="e.g. arun.student@campuscare.edu" required>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeForgotPasswordModal()">Cancel</button>
+          <button type="submit" id="btn-forgot-step1" class="btn btn-primary">
+            Send Reset Code →
+          </button>
+        </div>
+      </form>
+
+      <!-- STEP 2: Enter Reset OTP Code & New Password -->
+      <form id="forgot-step2-form" style="display:none;">
+        <div id="forgot-dev-otp-container" style="display:none; margin-bottom:1rem; padding:0.65rem 0.85rem; background:rgba(6,182,212,0.08); border:1px dashed #06b6d4; border-radius:var(--radius-md);">
+          <div style="font-size:0.75rem; color:var(--color-text-muted); margin-bottom:4px;">Local Dev Reset OTP:</div>
+          <span class="otp-display-badge" id="forgot-dev-otp-badge"></span>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="copyForgotOtpToInput()" style="margin-left:8px; padding:2px 8px; font-size:0.75rem;">Copy to field</button>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label for="forgot-email-confirm" class="form-label">Account Email <span class="required">*</span></label>
+          <input type="email" id="forgot-email-confirm" class="form-control" required readonly style="background:var(--color-surface-hover);">
+        </div>
+
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label for="forgot-otp" class="form-label">6-Digit Reset Code <span class="required">*</span></label>
+          <input type="text" id="forgot-otp" class="form-control" placeholder="123456" maxlength="6" style="font-family:var(--font-mono); font-size:1.15rem; letter-spacing:0.2em; text-align:center;" required autocomplete="one-time-code">
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label for="forgot-new-pass" class="form-label">New Password <span class="required">*</span></label>
+          <div class="password-wrapper">
+            <input type="password" id="forgot-new-pass" class="form-control" placeholder="••••••••" minlength="8" required>
+            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('forgot-new-pass', this)">
+              <span data-icon="eye" data-icon-size="18"></span>
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="backToForgotStep1()">← Change Account</button>
+          <button type="submit" id="btn-forgot-step2" class="btn btn-primary">
+            Update Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+
+  <script>
+    // Password visibility toggle helper
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.innerHTML = `<span data-icon="eye-off" data-icon-size="18"></span>`;
+      } else {
+        input.type = 'password';
+        btn.innerHTML = `<span data-icon="eye" data-icon-size="18"></span>`;
+      }
+      if (typeof Icons !== 'undefined') Icons.renderPageIcons();
+    }
+
+    // Quick demonstration autofill
+    function fillCreds(u, p) {
+      document.getElementById('username').value = u;
+      document.getElementById('password').value = p;
+      document.getElementById('login-error-alert').style.display = 'none';
+      document.getElementById('login-success-alert').style.display = 'none';
+    }
+
+    // Check if user is already authenticated
+    auth.getCurrentUser().then(user => {
+      if (user) {
+        window.location.href = 'dashboard.html';
+      }
+    });
+
+    // --- Sign In Submission ---
+    const loginForm = document.getElementById('login-form');
+    const submitBtn = document.getElementById('btn-login-submit');
+    const errorAlert = document.getElementById('login-error-alert');
+    const errorMsg = document.getElementById('login-error-msg');
+    const successAlert = document.getElementById('login-success-alert');
+    const successMsg = document.getElementById('login-success-msg');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value;
+      const remember = document.getElementById('remember-me').checked;
+
+      errorAlert.style.display = 'none';
+      successAlert.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="spinner" style="width:16px; height:16px; margin-right:6px;"></span> Verifying credentials...`;
+
+      try {
+        const user = await auth.login(u, p, remember);
+        successAlert.style.display = 'block';
+        successMsg.textContent = `Welcome back, ${user.full_name}! Redirecting to your dashboard...`;
+        
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 500);
+      } catch (err) {
+        errorAlert.style.display = 'block';
+        // Generic error message to prevent enumeration
+        errorMsg.textContent = err.message || 'Invalid credentials. Please verify your identifier and password.';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<span data-icon="lock" data-icon-size="16"></span> Sign In to Portal`;
+        if (typeof Icons !== 'undefined') Icons.renderPageIcons();
+      }
+    });
+
+    // ========================================================
+    // Student Account Activation Flow
+    // ========================================================
+    let actSessionData = {
+      roll: '',
+      email: '',
+      sessionToken: '',
+      passwordGrantToken: '',
+      otpCode: ''
+    };
+
+    function openActivationModal() {
+      document.getElementById('activation-modal').classList.add('active');
+      backToActivationStep(1);
+      setActAlert('', 'none');
+      if (typeof Icons !== 'undefined') Icons.renderPageIcons();
+    }
+
+    function closeActivationModal() {
+      document.getElementById('activation-modal').classList.remove('active');
+    }
+
+    function fillDemoActivation(roll, email) {
+      document.getElementById('act-roll').value = roll;
+      document.getElementById('act-email').value = email;
+    }
+
+    function setActAlert(msg, type = 'error') {
+      const el = document.getElementById('act-alert');
+      if (!msg) {
+        el.style.display = 'none';
+        return;
+      }
+      el.style.display = 'block';
+      if (type === 'error') {
+        el.style.background = 'var(--color-danger-bg)';
+        el.style.color = 'var(--color-danger-text)';
+        el.style.border = '1px solid var(--color-danger-border)';
+      } else {
+        el.style.background = 'var(--color-success-bg)';
+        el.style.color = 'var(--color-success-text)';
+        el.style.border = '1px solid var(--color-success-border)';
+      }
+      el.textContent = msg;
+    }
+
+    function backToActivationStep(step) {
+      setActAlert('', 'none');
+      document.getElementById('act-step1-form').style.display = step === 1 ? 'block' : 'none';
+      document.getElementById('act-step2-form').style.display = step === 2 ? 'block' : 'none';
+      document.getElementById('act-step3-form').style.display = step === 3 ? 'block' : 'none';
+
+      const p1 = document.getElementById('act-step-pill-1');
+      const p2 = document.getElementById('act-step-pill-2');
+      const p3 = document.getElementById('act-step-pill-3');
+
+      p1.className = 'step-pill ' + (step === 1 ? 'active' : (step > 1 ? 'completed' : ''));
+      p2.className = 'step-pill ' + (step === 2 ? 'active' : (step > 2 ? 'completed' : ''));
+      p3.className = 'step-pill ' + (step === 3 ? 'active' : '');
+
+      document.getElementById('act-step-title').textContent = 
+        step === 1 ? 'Step 1: Student Verification' : 
+        (step === 2 ? 'Step 2: Enter Verification Code' : 'Step 3: Create Password');
+    }
+
+    // Step 1: Request OTP
+    document.getElementById('act-step1-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const roll = document.getElementById('act-roll').value.trim();
+      const email = document.getElementById('act-email').value.trim();
+      const btn = document.getElementById('btn-act-step1');
+
+      setActAlert('', 'none');
+      btn.disabled = true;
+      btn.textContent = 'Verifying with registry...';
+
+      try {
+        const res = await auth.initiateActivation(roll, email);
+        actSessionData.roll = roll;
+        actSessionData.email = email;
+        actSessionData.sessionToken = res.data.session_token;
+
+        document.getElementById('act-target-email').textContent = email;
+
+        // Dev mode preview of OTP for frictionless testing
+        if (res.data.otp_debug_code) {
+          actSessionData.otpCode = res.data.otp_debug_code;
+          document.getElementById('act-dev-otp-container').style.display = 'block';
+          document.getElementById('act-dev-otp-badge').textContent = res.data.otp_debug_code;
+        } else {
+          document.getElementById('act-dev-otp-container').style.display = 'none';
+        }
+
+        backToActivationStep(2);
+      } catch (err) {
+        setActAlert(err.message || 'Verification failed. Please check your credentials.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Verify & Send Code →';
+      }
+    });
+
+    function copyOtpToInput() {
+      if (actSessionData.otpCode) {
+        document.getElementById('act-otp').value = actSessionData.otpCode;
+      }
+    }
+
+    // Step 2: Verify OTP
+    document.getElementById('act-step2-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const otp = document.getElementById('act-otp').value.trim();
+      const btn = document.getElementById('btn-act-step2');
+
+      setActAlert('', 'none');
+      btn.disabled = true;
+      btn.textContent = 'Validating code...';
+
+      try {
+        const res = await auth.verifyActivationOtp(
+          actSessionData.roll,
+          actSessionData.email,
+          otp,
+          actSessionData.sessionToken
+        );
+        actSessionData.passwordGrantToken = res.data.password_grant_token;
+        backToActivationStep(3);
+      } catch (err) {
+        setActAlert(err.message || 'Invalid or expired verification code.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Verify OTP →';
+      }
+    });
+
+    // Step 3: Complete Password Creation
+    document.getElementById('act-step3-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pass = document.getElementById('act-new-pass').value;
+      const conf = document.getElementById('act-confirm-pass').value;
+      const btn = document.getElementById('btn-act-step3');
+
+      if (pass !== conf) {
+        setActAlert('Passwords do not match. Please re-enter matching passwords.', 'error');
+        return;
+      }
+
+      setActAlert('', 'none');
+      btn.disabled = true;
+      btn.textContent = 'Finalizing account setup...';
+
+      try {
+        const res = await auth.completeActivation(
+          actSessionData.roll,
+          actSessionData.email,
+          actSessionData.passwordGrantToken,
+          pass
+        );
+
+        closeActivationModal();
+        successAlert.style.display = 'block';
+        successMsg.textContent = 'Student account activated successfully! Please sign in with your credentials.';
+        document.getElementById('username').value = actSessionData.roll;
+        document.getElementById('password').value = pass;
+      } catch (err) {
+        setActAlert(err.message || 'Failed to complete activation.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Complete Account Activation';
+      }
+    });
+
+    // ========================================================
+    // Forgot Password Flow
+    // ========================================================
+    let forgotData = {
+      email: '',
+      otpCode: ''
+    };
+
+    function openForgotPasswordModal() {
+      document.getElementById('forgot-modal').classList.add('active');
+      backToForgotStep1();
+      setForgotAlert('', 'none');
+      if (typeof Icons !== 'undefined') Icons.renderPageIcons();
+    }
+
+    function closeForgotPasswordModal() {
+      document.getElementById('forgot-modal').classList.remove('active');
+    }
+
+    function setForgotAlert(msg, type = 'error') {
+      const el = document.getElementById('forgot-alert');
+      if (!msg) {
+        el.style.display = 'none';
+        return;
+      }
+      el.style.display = 'block';
+      if (type === 'error') {
+        el.style.background = 'var(--color-danger-bg)';
+        el.style.color = 'var(--color-danger-text)';
+        el.style.border = '1px solid var(--color-danger-border)';
+      } else {
+        el.style.background = 'var(--color-success-bg)';
+        el.style.color = 'var(--color-success-text)';
+        el.style.border = '1px solid var(--color-success-border)';
+      }
+      el.textContent = msg;
+    }
+
+    function backToForgotStep1() {
+      setForgotAlert('', 'none');
+      document.getElementById('forgot-step1-form').style.display = 'block';
+      document.getElementById('forgot-step2-form').style.display = 'none';
+      document.getElementById('forgot-title').textContent = 'Reset Password';
+    }
+
+    // Step 1: Request Reset
+    document.getElementById('forgot-step1-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('forgot-identifier').value.trim();
+      const btn = document.getElementById('btn-forgot-step1');
+
+      setForgotAlert('', 'none');
+      btn.disabled = true;
+      btn.textContent = 'Sending reset code...';
+
+      try {
+        const res = await auth.requestPasswordReset(id);
+        forgotData.email = res.data && res.data.target_email ? res.data.target_email : (id.includes('@') ? id : '');
+        document.getElementById('forgot-email-confirm').value = forgotData.email || id;
+
+        if (res.data && res.data.otp_debug_code) {
+          forgotData.otpCode = res.data.otp_debug_code;
+          document.getElementById('forgot-dev-otp-container').style.display = 'block';
+          document.getElementById('forgot-dev-otp-badge').textContent = res.data.otp_debug_code;
+        } else {
+          document.getElementById('forgot-dev-otp-container').style.display = 'none';
+        }
+
+        document.getElementById('forgot-step1-form').style.display = 'none';
+        document.getElementById('forgot-step2-form').style.display = 'block';
+        document.getElementById('forgot-title').textContent = 'Enter Reset Code';
+      } catch (err) {
+        setForgotAlert(err.message || 'Unable to process reset request.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Reset Code →';
+      }
+    });
+
+    function copyForgotOtpToInput() {
+      if (forgotData.otpCode) {
+        document.getElementById('forgot-otp').value = forgotData.otpCode;
+      }
+    }
+
+    // Step 2: Confirm Reset
+    document.getElementById('forgot-step2-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('forgot-email-confirm').value.trim();
+      const otp = document.getElementById('forgot-otp').value.trim();
+      const newPass = document.getElementById('forgot-new-pass').value;
+      const btn = document.getElementById('btn-forgot-step2');
+
+      setForgotAlert('', 'none');
+      btn.disabled = true;
+      btn.textContent = 'Updating password...';
+
+      try {
+        await auth.resetPassword(email, otp, newPass);
+        closeForgotPasswordModal();
+        successAlert.style.display = 'block';
+        successMsg.textContent = 'Password reset successful! You may now sign in with your new password.';
+        document.getElementById('username').value = email;
+        document.getElementById('password').value = newPass;
+      } catch (err) {
+        setForgotAlert(err.message || 'Failed to reset password.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Update Password';
+      }
+    });
+  </script>
+</body>
+</html>

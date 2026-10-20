@@ -1,0 +1,304 @@
+/* ==========================================================================
+   CampusCare Multi-Device Responsive Design System
+   Breakpoints:
+     - Large Screen / 4K Desktop: min-width: 1441px
+     - Laptop / Desktop: 1025px - 1440px
+     - Tablet / Small Laptop: 769px - 1024px
+     - Mobile (Landscape & Portrait): <= 768px
+     - Small Mobile: <= 480px
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Large Screen / 4K Displays (> 1440px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 1441px) {
+  :root {
+    --max-content-width: 1560px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-6);
+  }
+
+  .page-container {
+    padding: var(--space-10) var(--space-8);
+  }
+
+  .auth-card {
+    max-width: 480px;
+    padding: 3rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Standard Laptop / Desktop (1025px - 1440px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1440px) and (min-width: 1025px) {
+  .metrics-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Tablet & Small Laptop (769px - 1024px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 240px;
+  }
+
+  .details-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .bar-label {
+    width: 110px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .app-footer {
+    padding: var(--space-4) var(--space-6);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Mobile Devices (<= 768px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 270px;
+    --header-height: 62px;
+  }
+
+  /* Off-canvas Navigation Drawer */
+  .app-sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-xl);
+    z-index: 1000;
+  }
+
+  .app-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay.open {
+    display: block;
+    z-index: 999;
+  }
+
+  .app-main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .menu-toggle-btn {
+    display: inline-flex;
+  }
+
+  .app-header {
+    padding: 0 var(--space-4);
+    height: var(--header-height);
+  }
+
+  .breadcrumbs {
+    font-size: 0.8rem;
+  }
+
+  .breadcrumb-separator {
+    font-size: 0.7rem;
+  }
+
+  .page-container {
+    padding: var(--space-4);
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .page-title-group h2 {
+    font-size: 1.4rem;
+  }
+
+  .page-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .page-actions .btn {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  /* Metrics Grid (2 columns on mobile) */
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .metric-card {
+    padding: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .metric-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+  }
+
+  .metric-value {
+    font-size: 1.4rem;
+  }
+
+  .metric-label {
+    font-size: 0.75rem;
+  }
+
+  /* Filter Bar Stacking */
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .search-input-group {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .filter-controls {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+
+  .filter-controls select,
+  .filter-controls .btn {
+    width: 100%;
+  }
+
+  /* Responsive Horizontal Touch Scrolling */
+  .table-responsive {
+    border-radius: var(--radius-md);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: var(--space-3) var(--space-3);
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  /* Application Footer on Mobile */
+  .app-footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-3);
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .app-footer-left {
+    flex-direction: column;
+    gap: var(--space-1);
+    align-items: center;
+  }
+
+  .app-footer-left .footer-divider {
+    display: none;
+  }
+
+  .app-footer-right {
+    justify-content: center;
+    gap: var(--space-3);
+  }
+
+  /* Modal Sheets on Mobile */
+  .modal-overlay {
+    padding: var(--space-2);
+    align-items: flex-end;
+  }
+
+  .modal {
+    max-height: 90vh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Small Mobile Phones (<= 480px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  /* Single column metrics to prevent awkward text wrapping */
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .page-title-group h2 {
+    font-size: 1.25rem;
+  }
+
+  .header-right {
+    gap: var(--space-2);
+  }
+
+  .header-action-btn,
+  .theme-toggle-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .filter-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  .auth-card {
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .demo-chips {
+    gap: 0.3rem;
+  }
+
+  .demo-chip {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+}

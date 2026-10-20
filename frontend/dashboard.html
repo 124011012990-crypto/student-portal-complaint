@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — CampusCare</title>
+  <script>(function () { const t = localStorage.getItem('campuscare_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="app-sidebar" class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <!-- Sticky Top Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation drawer"><span data-icon="menu"
+              data-icon-size="20"></span></button>
+          <nav class="breadcrumbs">
+            <span>Portal</span>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Dashboard</span>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <a href="notifications.html" class="header-action-btn" title="Notifications">
+            <span data-icon="bell" data-icon-size="18"></span>
+            <span id="notif-bubble" class="notif-bubble" style="display:none;">0</span>
+          </a>
+          <button class="btn btn-ghost btn-sm" data-action="logout" title="Sign Out">
+            <span data-icon="log-out" data-icon-size="16"></span> Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Page Content -->
+      <main class="page-container">
+        <!-- Dashboard Executive Welcome Banner -->
+        <div class="card dash-welcome-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-4);">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span id="dash-role-badge" class="badge" style="background:var(--color-primary-light); color:var(--color-primary); font-size:0.75rem;">Official Grievance Cell</span>
+                <span id="dash-status-badge" class="badge" style="background:var(--color-success-bg); color:var(--color-success-text); border:1px solid var(--color-success-border); font-size:0.7rem;">
+                  <span class="system-status-indicator" style="width:6px; height:6px;"></span> SLA 98.4% On-Track
+                </span>
+              </div>
+              <h2 id="dash-welcome-title" style="font-size:1.6rem; font-weight:700; color:var(--color-text-main); margin-bottom:4px;">Welcome back</h2>
+              <p id="dash-welcome-desc" class="page-subtitle" style="margin:0;">Loading your grievance workspace...</p>
+            </div>
+            <div id="dash-banner-actions" class="page-actions">
+              <a href="submit-complaint.html" id="dash-submit-btn" class="btn btn-primary">
+                <span data-icon="file-plus" data-icon-size="16"></span> File New Grievance
+              </a>
+              <a href="complaints.html" class="btn btn-secondary">
+                <span data-icon="clipboard-list" data-icon-size="16"></span> All Cases
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role Authority & RBAC Information Card -->
+        <div id="dash-role-authority-card" class="card dash-authority-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-3);">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:3px;">
+                <span data-icon="shield" data-icon-size="16" style="color:var(--color-primary);"></span>
+                <span style="font-size:var(--font-size-xs); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--color-text-muted);">Role Authority & Permissions</span>
+                <span id="dash-role-scope-badge" class="badge" style="background:var(--color-surface-hover); font-size:0.72rem; color:var(--color-text-muted);">Personal Scope</span>
+              </div>
+              <p id="dash-role-scope-desc" style="font-size:var(--font-size-xs); color:var(--color-text-muted); margin:0;">
+                Evaluating active role authorities and granted capabilities...
+              </p>
+            </div>
+            <div id="dash-role-perms-list" style="display:flex; flex-wrap:wrap; gap:6px;">
+              <!-- Populated dynamically by dashboard.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric Cards Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card total">
+            <div class="metric-icon-box"><span data-icon="clipboard-list" data-icon-size="24"></span></div>
+            <div class="metric-info">
+              <span id="metric-total" class="metric-value">0</span>
+              <span id="metric-label-total" class="metric-label">Total Grievances</span>
+            </div>
+          </div>
+
+          <div class="metric-card pending">
+            <div class="metric-icon-box"><span data-icon="clock" data-icon-size="24"></span></div>
+            <div class="metric-info">
+              <span id="metric-pending" class="metric-value">0</span>
+              <span id="metric-label-pending" class="metric-label">Pending Review</span>
+            </div>
+          </div>
+
+          <div class="metric-card in-progress">
+            <div class="metric-icon-box"><span data-icon="refresh-cw" data-icon-size="24"></span></div>
+            <div class="metric-info">
+              <span id="metric-in-progress" class="metric-value">0</span>
+              <span id="metric-label-in-progress" class="metric-label">Under Investigation</span>
+            </div>
+          </div>
+
+          <div class="metric-card resolved">
+            <div class="metric-icon-box"><span data-icon="check-circle-2" data-icon-size="24"></span></div>
+            <div class="metric-info">
+              <span id="metric-resolved" class="metric-value">0</span>
+              <span id="metric-label-resolved" class="metric-label">Resolved & Closed</span>
+            </div>
+          </div>
+
+          <div class="metric-card overdue">
+            <div class="metric-icon-box"><span data-icon="alert-triangle" data-icon-size="24"></span></div>
+            <div class="metric-info">
+              <span id="metric-overdue" class="metric-value">0</span>
+              <span id="metric-label-overdue" class="metric-label">Overdue SLA Cases</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Domain Categories Quick Nav Grid -->
+        <div id="dash-domain-cards" class="dash-domain-grid">
+          <div class="card dash-domain-item" onclick="window.location.href='complaints.html?dept=ACAD'">
+            <div style="width:42px; height:42px; border-radius:var(--radius-md); background:rgba(59,130,246,0.12); color:#2563eb; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <span data-icon="file-text" data-icon-size="20"></span>
+            </div>
+            <div>
+              <div style="font-size:var(--font-size-sm); font-weight:var(--font-weight-bold); color:var(--color-text-main);">Academics & Labs</div>
+              <div style="font-size:var(--font-size-xs); color:var(--color-text-muted);">Exams, Faculty, Labs</div>
+            </div>
+          </div>
+
+          <div class="card dash-domain-item" onclick="window.location.href='complaints.html?dept=INFRA'">
+            <div style="width:42px; height:42px; border-radius:var(--radius-md); background:rgba(16,185,129,0.12); color:#059669; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <span data-icon="settings" data-icon-size="20"></span>
+            </div>
+            <div>
+              <div style="font-size:var(--font-size-sm); font-weight:var(--font-weight-bold); color:var(--color-text-main);">Campus Infrastructure</div>
+              <div style="font-size:var(--font-size-xs); color:var(--color-text-muted);">WiFi, Classrooms, Power</div>
+            </div>
+          </div>
+
+          <div class="card dash-domain-item" onclick="window.location.href='complaints.html?dept=HOSTEL'">
+            <div style="width:42px; height:42px; border-radius:var(--radius-md); background:rgba(245,158,11,0.12); color:#d97706; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <span data-icon="folder" data-icon-size="20"></span>
+            </div>
+            <div>
+              <div style="font-size:var(--font-size-sm); font-weight:var(--font-weight-bold); color:var(--color-text-main);">Hostel & Mess</div>
+              <div style="font-size:var(--font-size-xs); color:var(--color-text-muted);">Catering, Rooms, Water</div>
+            </div>
+          </div>
+
+          <div class="card dash-domain-item" onclick="window.location.href='submit-complaint.html'">
+            <div style="width:42px; height:42px; border-radius:var(--radius-md); background:rgba(239,68,68,0.12); color:#dc2626; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <span data-icon="shield" data-icon-size="20"></span>
+            </div>
+            <div>
+              <div style="font-size:var(--font-size-sm); font-weight:var(--font-weight-bold); color:var(--color-text-main);">Conduct & Safety</div>
+              <div style="font-size:var(--font-size-xs); color:var(--color-text-muted);">Staff Shielded • Anti-Ragging</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Column Analytical Overview Grid -->
+        <div class="dash-analytics-grid">
+          <!-- Status Distribution -->
+          <div class="card dash-analytics-card">
+            <div class="card-header" style="flex-wrap:wrap; gap:8px;">
+              <div>
+                <h3 class="card-title">Complaint Status Distribution</h3>
+                <span style="font-size:var(--font-size-xs); color:var(--color-text-muted);">Live Progress & Pipeline</span>
+              </div>
+              <div style="display:flex; background:var(--color-surface-hover); padding:2px; border-radius:var(--radius-md); border:1px solid var(--color-border);">
+                <button type="button" id="btn-status-view-donut" class="btn btn-sm active" style="padding:2px 12px; font-size:0.75rem; border-radius:4px;" onclick="dashboard.toggleStatusView('donut')"><span data-icon="pie-chart" data-icon-size="12"></span> Donut</button>
+                <button type="button" id="btn-status-view-bars" class="btn btn-ghost btn-sm" style="padding:2px 12px; font-size:0.75rem; border-radius:4px;" onclick="dashboard.toggleStatusView('bars')"><span data-icon="bar-chart-2" data-icon-size="12"></span> Bars</button>
+              </div>
+            </div>
+            
+            <div id="status-donut-container" class="dash-donut-wrapper">
+              <canvas id="dash-status-canvas"></canvas>
+            </div>
+            <div id="status-bars-container" class="dash-bars-wrapper" style="display:none;"></div>
+            
+            <div id="status-card-footer" class="dash-analytics-footer">
+              <span style="color:var(--color-text-muted); font-size:0.75rem;">Evaluating status pipeline...</span>
+            </div>
+          </div>
+
+          <!-- Priority Distribution -->
+          <div class="card dash-analytics-card">
+            <div class="card-header" style="flex-wrap:wrap; gap:8px;">
+              <div>
+                <h3 class="card-title">Severity & Priority Levels</h3>
+                <span style="font-size:var(--font-size-xs); color:var(--color-text-muted);">SLA Priority & Urgency</span>
+              </div>
+              <div style="display:flex; background:var(--color-surface-hover); padding:2px; border-radius:var(--radius-md); border:1px solid var(--color-border);">
+                <button type="button" id="btn-priority-view-donut" class="btn btn-sm active" style="padding:2px 12px; font-size:0.75rem; border-radius:4px;" onclick="dashboard.togglePriorityView('donut')"><span data-icon="pie-chart" data-icon-size="12"></span> Donut</button>
+                <button type="button" id="btn-priority-view-bars" class="btn btn-ghost btn-sm" style="padding:2px 12px; font-size:0.75rem; border-radius:4px;" onclick="dashboard.togglePriorityView('bars')"><span data-icon="bar-chart-2" data-icon-size="12"></span> Bars</button>
+              </div>
+            </div>
+
+            <div id="priority-donut-container" class="dash-donut-wrapper">
+              <canvas id="dash-priority-canvas"></canvas>
+            </div>
+            <div id="priority-bars-container" class="dash-bars-wrapper" style="display:none;"></div>
+
+            <div id="priority-card-footer" class="dash-analytics-footer">
+              <span style="color:var(--color-text-muted); font-size:0.75rem;">Evaluating SLA urgency load...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role-Specific Operational Workspace Container -->
+        <div id="dash-role-workspace" class="dash-workspace-section"></div>
+
+        <!-- Recent Complaints Table -->
+        <div class="card">
+          <div class="card-header" style="flex-wrap:wrap; gap:var(--space-3);">
+            <div>
+              <h3 id="dash-table-title" class="card-title">Recently Submitted Complaints</h3>
+              <p id="dash-table-desc" style="font-size:var(--font-size-xs); color:var(--color-text-muted); margin-top:2px;">Latest grievances requiring attention or updates</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:var(--space-3); flex-wrap:wrap;">
+              <div style="position:relative; width:220px;">
+                <input type="text" id="dash-recent-search" class="form-control" placeholder="Quick search..." style="padding:0.4rem 0.8rem; font-size:var(--font-size-xs);">
+              </div>
+              <a id="dash-table-view-link" href="complaints.html" class="btn btn-secondary btn-sm">View All Cases →</a>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ref ID</th>
+                  <th>Title & Category</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Submitted</th>
+                  <th style="text-align:right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="recent-complaints-tbody">
+                <tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--color-text-muted);">Loading recent complaints...</td></tr>
+              </tbody>
+            </table>
+
+            <div id="recent-empty-state" class="empty-state" style="display:none;">
+              <div class="empty-icon"><span data-icon="folder" data-icon-size="36"></span></div>
+              <h4 class="empty-title">No grievances found</h4>
+              <p class="empty-desc">There are no active or recent grievances currently logged in this scope.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Action Modal -->
+        <div id="dash-action-modal" class="modal-overlay">
+          <div class="modal">
+            <div class="modal-header">
+              <h3 id="dash-modal-title" class="modal-title">Action</h3>
+              <button type="button" class="modal-close-btn" onclick="dashboard.closeModal()" aria-label="Close modal">×</button>
+            </div>
+            <div id="dash-modal-body" class="modal-body"></div>
+            <div id="dash-modal-footer" class="modal-footer"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="assets/js/footer.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/chart.umd.min.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      dashboard.init();
+    });
+  </script>
+</body>
+</html>

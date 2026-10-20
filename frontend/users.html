@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Accounts — CampusCare</title>
+  <script>(function(){const t=localStorage.getItem('campuscare_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="app-sidebar" class="app-sidebar"></aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation drawer"><span data-icon="menu" data-icon-size="20"></span></button>
+          <nav class="breadcrumbs">
+            <a href="dashboard.html">Dashboard</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">User Accounts</span>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <a href="notifications.html" class="header-action-btn" title="Notifications">
+            <span data-icon="bell" data-icon-size="18"></span>
+            <span id="notif-bubble" class="notif-bubble" style="display:none;">0</span>
+          </a>
+          <button class="btn btn-ghost btn-sm" data-action="logout"><span data-icon="log-out" data-icon-size="16"></span> Logout</button>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <div class="page-header">
+          <div class="page-title-group">
+            <h2>User Account Management</h2>
+            <p class="page-subtitle">Manage campus student, staff, HOD, and officer accounts, roles, and access statuses.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="openAddUserModal()">
+              <span data-icon="plus" data-icon-size="16"></span> Add User Account
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="search-input-group">
+            <span class="search-icon"><span data-icon="search" data-icon-size="16"></span></span>
+            <input type="text" id="user-search-input" class="form-control search-input" placeholder="Search by name, username, email, or roll number...">
+          </div>
+
+          <div class="filter-controls">
+            <select id="user-role-filter" class="form-control" style="width:auto;">
+              <option value="">All Roles</option>
+            </select>
+
+            <select id="user-dept-filter" class="form-control" style="width:auto;">
+              <option value="">All Departments</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Users Table Card -->
+        <div class="card" style="padding:0; overflow:hidden;">
+          <div class="table-responsive" style="border:none; box-shadow:none;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Email & Phone</th>
+                  <th>Role</th>
+                  <th>Department</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--color-text-muted);">Loading user records...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+            <div id="users-pagination-info" style="font-size:var(--font-size-xs); color:var(--color-text-muted);">Showing records</div>
+            <div id="users-pagination-container" class="page-numbers"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Add User -->
+  <div id="add-user-modal-overlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Create User Account</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('add-user-modal-overlay').classList.remove('open')">✕</button>
+      </div>
+      <form id="add-user-form">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="new_username" class="form-label">Username <span class="required">*</span></label>
+              <input type="text" id="new_username" class="form-control" required placeholder="e.g. jdoe_staff">
+            </div>
+
+            <div class="form-group">
+              <label for="new_email" class="form-label">Email Address <span class="required">*</span></label>
+              <input type="email" id="new_email" class="form-control" required placeholder="jdoe@campuscare.edu">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="new_fullname" class="form-label">Full Name <span class="required">*</span></label>
+              <input type="text" id="new_fullname" class="form-control" required placeholder="Dr. John Doe">
+            </div>
+
+            <div class="form-group">
+              <label for="new_phone" class="form-label">Phone</label>
+              <input type="tel" id="new_phone" class="form-control" placeholder="+91 98765 00000">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="new_role_id" class="form-label">Account Role <span class="required">*</span></label>
+              <select id="new_role_id" class="form-control" required>
+                <option value="">-- Select Role --</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="new_dept_id" class="form-label">Department</label>
+              <select id="new_dept_id" class="form-control">
+                <option value="">-- No Department (Admin) --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="new_roll" class="form-label">Student Roll Number (If Student Role)</label>
+            <input type="text" id="new_roll" class="form-control" placeholder="e.g. 2024CSE088">
+          </div>
+
+          <div class="form-group">
+            <label for="new_password" class="form-label">Initial Password <span class="required">*</span></label>
+            <input type="password" id="new_password" class="form-control" required minlength="8" placeholder="Minimum 8 characters">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('add-user-modal-overlay').classList.remove('open')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="assets/js/footer.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    let rolesData = [];
+    let deptsData = [];
+    let currentPage = 1;
+
+    async function loadUsers(page = 1) {
+      currentPage = page;
+      const search = document.getElementById('user-search-input').value.trim();
+      const roleId = document.getElementById('user-role-filter').value;
+      const deptId = document.getElementById('user-dept-filter').value;
+      const tbody = document.getElementById('users-tbody');
+
+      try {
+        const res = await api.get('/admin/users', { page, per_page: 15, search, role_id: roleId, department_id: deptId });
+        const users = res.data && res.data.data ? res.data.data : [];
+        const total = res.data ? res.data.total : 0;
+
+        if (users.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--color-text-muted);">No users found.</td></tr>`;
+          renderPagination(0, 1);
+          return;
+        }
+
+        tbody.innerHTML = users.map(u => `
+          <tr>
+            <td>
+              <div style="font-weight:600; color:var(--color-text-main);">${u.full_name}</div>
+              <div style="font-size:var(--font-size-xs); color:var(--color-text-muted); font-family:var(--font-mono);">${u.username} ${u.roll_number ? '• ' + u.roll_number : ''}</div>
+            </td>
+            <td>
+              <div>${u.email}</div>
+              <div style="font-size:var(--font-size-xs); color:var(--color-text-muted);">${u.phone || 'N/A'}</div>
+            </td>
+            <td><span class="badge" style="background:#e0e7ff; color:#3730a3;">${u.role_name}</span></td>
+            <td>${u.department_name || '<span style="color:#94a3b8;">None</span>'}</td>
+            <td>
+              <span class="badge ${u.is_active ? 'badge-resolved' : 'badge-rejected'}">
+                ${u.is_active ? 'Active' : 'Deactivated'}
+              </span>
+            </td>
+            <td style="color:var(--color-text-muted); font-size:var(--font-size-xs);">${app.formatDateShort(u.created_at)}</td>
+            <td>
+              <button class="btn btn-secondary btn-sm" onclick="toggleUserActive(${u.id}, ${u.is_active})">
+                ${u.is_active ? 'Deactivate' : 'Activate'}
+              </button>
+            </td>
+          </tr>
+        `).join('');
+
+        renderPagination(total, page);
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--color-danger); padding:2rem;">Failed to load users: ${e.message}</td></tr>`;
+      }
+    }
+
+    function renderPagination(total, current) {
+      const container = document.getElementById('users-pagination-container');
+      const info = document.getElementById('users-pagination-info');
+      const totalPages = Math.ceil(total / 15) || 1;
+
+      info.textContent = `Showing ${total === 0 ? 0 : (current - 1) * 15 + 1}-${Math.min(current * 15, total)} of ${total} accounts`;
+
+      let btns = '';
+      for (let p = 1; p <= totalPages; p++) {
+        btns += `<button class="page-btn ${p === current ? 'active' : ''}" onclick="loadUsers(${p})">${p}</button>`;
+      }
+      container.innerHTML = btns;
+    }
+
+    async function toggleUserActive(id, currentStatus) {
+      const action = currentStatus ? 'deactivate' : 'activate';
+      if (confirm(`Are you sure you want to ${action} this user account?`)) {
+        try {
+          await api.post(`/admin/users/${id}/toggle`);
+          app.showToast(`User account ${action}d successfully`, 'success');
+          loadUsers(currentPage);
+        } catch (e) {
+          app.showToast('Action failed: ' + e.message, 'error');
+        }
+      }
+    }
+
+    function openAddUserModal() {
+      document.getElementById('add-user-form').reset();
+      document.getElementById('add-user-modal-overlay').classList.add('open');
+    }
+
+    document.getElementById('add-user-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        username: document.getElementById('new_username').value.trim(),
+        email: document.getElementById('new_email').value.trim(),
+        full_name: document.getElementById('new_fullname').value.trim(),
+        phone: document.getElementById('new_phone').value.trim(),
+        role_id: document.getElementById('new_role_id').value,
+        department_id: document.getElementById('new_dept_id').value || null,
+        roll_number: document.getElementById('new_roll').value.trim() || null,
+        password: document.getElementById('new_password').value
+      };
+
+      try {
+        await api.post('/admin/users', payload);
+        document.getElementById('add-user-modal-overlay').classList.remove('open');
+        app.showToast('User account created successfully', 'success');
+        loadUsers(1);
+      } catch (err) {
+        app.showToast('Failed to create user: ' + err.message, 'error');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = await auth.requireAuth(['admin']);
+      if (!user) return;
+
+      await app.initLayout('users');
+
+      // Load roles & departments
+      const [rRes, dRes] = await Promise.all([
+        api.get('/admin/roles'),
+        api.get('/departments')
+      ]);
+
+      rolesData = rRes.data || [];
+      deptsData = dRes.data || [];
+
+      const roleFilter = document.getElementById('user-role-filter');
+      const newRoleSelect = document.getElementById('new_role_id');
+      rolesData.forEach(r => {
+        const opt1 = document.createElement('option');
+        opt1.value = r.id;
+        opt1.textContent = r.name;
+        roleFilter.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = r.id;
+        opt2.textContent = r.name;
+        newRoleSelect.appendChild(opt2);
+      });
+
+      const deptFilter = document.getElementById('user-dept-filter');
+      const newDeptSelect = document.getElementById('new_dept_id');
+      deptsData.forEach(d => {
+        const opt1 = document.createElement('option');
+        opt1.value = d.id;
+        opt1.textContent = d.name;
+        deptFilter.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = d.id;
+        opt2.textContent = `${d.name} (${d.code})`;
+        newDeptSelect.appendChild(opt2);
+      });
+
+      let searchTimer;
+      document.getElementById('user-search-input').addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => loadUsers(1), 350);
+      });
+
+      roleFilter.addEventListener('change', () => loadUsers(1));
+      deptFilter.addEventListener('change', () => loadUsers(1));
+
+      loadUsers(1);
+    });
+  </script>
+</body>
+</html>
