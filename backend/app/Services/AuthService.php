@@ -92,6 +92,7 @@ class AuthService
         // Generate CSRF token for the session
         $csrfToken = Security::generateCsrfToken();
         $user['csrf_token'] = $csrfToken;
+        $user['token'] = session_id();
 
         // Secure Persistent Remember-Me
         if ($rememberMe) {

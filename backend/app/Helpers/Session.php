@@ -21,6 +21,28 @@ class Session
             return;
         }
 
+        // Support Bearer token / X-Session-Token header for cross-origin environments (e.g. Vercel -> Render)
+        // where third-party cookies might be blocked by browsers
+        $token = null;
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
+        if (preg_match('/Bearer\s+([a-zA-Z0-9,-]+)/i', $authHeader, $matches)) {
+            $token = $matches[1];
+        } elseif (!empty($_SERVER['HTTP_X_SESSION_TOKEN'])) {
+            $token = trim($_SERVER['HTTP_X_SESSION_TOKEN']);
+        } elseif (function_exists('getallheaders')) {
+            $allHeaders = getallheaders();
+            foreach ($allHeaders as $k => $v) {
+                if (strtolower($k) === 'authorization' && preg_match('/Bearer\s+([a-zA-Z0-9,-]+)/i', $v, $m)) {
+                    $token = $m[1];
+                    break;
+                }
+                if (strtolower($k) === 'x-session-token') {
+                    $token = trim($v);
+                    break;
+                }
+            }
+        }
+
         if (!headers_sent()) {
             $lifetime = (int) Config::get('SESSION_LIFETIME', 7200);
             $isSecure = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
@@ -39,9 +61,17 @@ class Session
                 'samesite' => $sameSite
             ]);
 
-            ini_set('session.use_only_cookies', '1');
-            ini_set('session.use_strict_mode', '1');
+            if ($token && preg_match('/^[a-zA-Z0-9,-]{16,128}$/', $token)) {
+                ini_set('session.use_only_cookies', '0');
+                session_id($token);
+            } else {
+                ini_set('session.use_only_cookies', '0');
+            }
+
+            ini_set('session.use_strict_mode', '0');
             ini_set('session.gc_maxlifetime', (string)$lifetime);
+        } elseif ($token && preg_match('/^[a-zA-Z0-9,-]{16,128}$/', $token) && session_status() !== PHP_SESSION_ACTIVE) {
+            session_id($token);
         }
 
         if (session_status() !== PHP_SESSION_ACTIVE && !headers_sent()) {

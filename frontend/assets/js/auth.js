@@ -17,12 +17,16 @@ const auth = {
         if (this.currentUser.csrf_token) {
           api.setCsrfToken(this.currentUser.csrf_token);
         }
+        if (this.currentUser.token) {
+          api.setAuthToken(this.currentUser.token);
+        }
         sessionStorage.setItem('campus_user', JSON.stringify(this.currentUser));
         return this.currentUser;
       }
     } catch (e) {
       this.currentUser = null;
       sessionStorage.removeItem('campus_user');
+      api.setAuthToken(null);
     }
     return null;
   },
@@ -39,6 +43,9 @@ const auth = {
       if (this.currentUser.csrf_token) {
         api.setCsrfToken(this.currentUser.csrf_token);
       }
+      if (this.currentUser.token) {
+        api.setAuthToken(this.currentUser.token, !!rememberMe);
+      }
       sessionStorage.setItem('campus_user', JSON.stringify(this.currentUser));
       return this.currentUser;
     }
@@ -54,6 +61,7 @@ const auth = {
       this.currentUser = null;
       sessionStorage.removeItem('campus_user');
       sessionStorage.removeItem('campus_csrf_token');
+      api.setAuthToken(null);
       window.location.href = 'login.html';
     }
   },

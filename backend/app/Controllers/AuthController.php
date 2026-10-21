@@ -49,6 +49,8 @@ class AuthController extends Controller
             return;
         }
 
+        $user['token'] = session_id();
+        $user['csrf_token'] = Security::generateCsrfToken();
         Response::success($user);
     }
 

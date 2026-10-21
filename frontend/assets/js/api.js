@@ -5,11 +5,39 @@
 const api = {
   csrfToken: null,
 
+  getAuthToken() {
+    return sessionStorage.getItem('campus_auth_token') || localStorage.getItem('campus_auth_token') || '';
+  },
+
+  setAuthToken(token, persist = false) {
+    if (token) {
+      sessionStorage.setItem('campus_auth_token', token);
+      if (persist) {
+        localStorage.setItem('campus_auth_token', token);
+      }
+    } else {
+      sessionStorage.removeItem('campus_auth_token');
+      localStorage.removeItem('campus_auth_token');
+    }
+  },
+
   async getCsrfToken() {
     if (this.csrfToken) return this.csrfToken;
+    const stored = sessionStorage.getItem('campus_csrf_token');
+    if (stored) {
+      this.csrfToken = stored;
+      return stored;
+    }
     try {
+      const headers = { 'Accept': 'application/json' };
+      const authToken = this.getAuthToken();
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+        headers['X-Session-Token'] = authToken;
+      }
       const res = await fetch(`${CampusConfig.getApiBaseUrl()}/auth/csrf`, {
-        credentials: 'include'
+        credentials: 'include',
+        headers
       });
       const data = await res.json();
       if (data && data.data && data.data.csrf_token) {
@@ -36,6 +64,13 @@ const api = {
       'Accept': 'application/json',
       ...(options.headers || {})
     };
+
+    // Attach Bearer token & X-Session-Token for cross-domain auth
+    const authToken = this.getAuthToken();
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+      headers['X-Session-Token'] = authToken;
+    }
 
     // If sending JSON body, set Content-Type
     if (options.body && !(options.body instanceof FormData)) {
@@ -66,6 +101,7 @@ const api = {
         // Handle 401 Unauthenticated
         if (response.status === 401 && !endpoint.includes('/auth/login')) {
           sessionStorage.removeItem('campus_user');
+          this.setAuthToken(null);
           if (!window.location.pathname.endsWith('login.html') && !window.location.pathname.endsWith('index.html')) {
             window.location.href = 'login.html';
           }
