@@ -102,13 +102,13 @@ class Router
 
     private function handleCors(): void
     {
-        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-        $allowedOrigins = explode(',', Config::get('CORS_ALLOWED_ORIGIN', '*'));
-        $allowedOrigins = array_map('trim', $allowedOrigins);
+        $origin = rtrim(trim($_SERVER['HTTP_ORIGIN'] ?? ''), '/');
+        $rawAllowed = explode(',', (string) Config::get('CORS_ALLOWED_ORIGIN', '*'));
+        $allowedOrigins = array_map(fn($o) => rtrim(trim($o), '/'), $rawAllowed);
 
         if (in_array('*', $allowedOrigins, true)) {
             header('Access-Control-Allow-Origin: ' . ($origin ?: '*'));
-        } elseif (in_array($origin, $allowedOrigins, true)) {
+        } elseif ($origin !== '' && in_array($origin, $allowedOrigins, true)) {
             header("Access-Control-Allow-Origin: {$origin}");
         }
 

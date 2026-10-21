@@ -31,6 +31,10 @@ class Database
                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$charset} COLLATE utf8mb4_unicode_ci"
             ];
 
+            if (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT') && $host !== '127.0.0.1' && $host !== 'localhost') {
+                $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+            }
+
             try {
                 self::$connection = new PDO($dsn, $user, $pass, $options);
             } catch (PDOException $e) {

@@ -39,6 +39,8 @@ class Config
             $possiblePaths = [
                 dirname(__DIR__, 2) . '/.env',
                 dirname(__DIR__, 3) . '/.env',
+                dirname(__DIR__, 2) . '/.env.production',
+                dirname(__DIR__, 3) . '/.env.production',
             ];
             foreach ($possiblePaths as $p) {
                 if (file_exists($p)) {
@@ -90,6 +92,11 @@ class Config
     {
         if (!self::$loaded) {
             self::load();
+        }
+
+        $envVal = getenv($key);
+        if ($envVal !== false) {
+            return $envVal;
         }
 
         return self::$settings[$key] ?? $_ENV[$key] ?? $default;

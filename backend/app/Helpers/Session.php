@@ -22,8 +22,12 @@ class Session
         }
 
         if (!headers_sent()) {
-            $lifetime = (int) Config::get('SESSION_LIFETIME', 7200);
-            $isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
+            $isSecure = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+                || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+                || (Config::get('APP_ENV') === 'production');
+
+            // Cross-origin AJAX (Vercel -> Render) requires SameSite=None and Secure=true
+            $sameSite = $isSecure ? 'None' : 'Lax';
 
             session_set_cookie_params([
                 'lifetime' => $lifetime,
@@ -31,7 +35,7 @@ class Session
                 'domain'   => '',
                 'secure'   => $isSecure,
                 'httponly' => true,
-                'samesite' => 'Lax'
+                'samesite' => $sameSite
             ]);
 
             ini_set('session.use_only_cookies', '1');
