@@ -32,6 +32,13 @@ use App\Middleware\CsrfMiddleware;
 // Initialize Configuration
 Config::load();
 
+// Handle CORS and preflight OPTIONS request immediately
+Router::handleCors();
+if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
 // Global Exception Handler
 set_exception_handler(function (Throwable $e) {
     error_log("Unhandled exception: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());

@@ -22,6 +22,7 @@ class Session
         }
 
         if (!headers_sent()) {
+            $lifetime = (int) Config::get('SESSION_LIFETIME', 7200);
             $isSecure = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
                 || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
                 || (Config::get('APP_ENV') === 'production');

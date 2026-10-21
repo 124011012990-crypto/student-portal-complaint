@@ -41,7 +41,7 @@ class Router
 
     public function dispatch(): void
     {
-        $this->handleCors();
+        self::handleCors();
 
         $requestMethod = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
         if ($requestMethod === 'OPTIONS') {
@@ -100,7 +100,7 @@ class Router
         Response::notFound("Endpoint '{$requestMethod} {$requestUri}' does not exist.");
     }
 
-    private function handleCors(): void
+    public static function handleCors(): void
     {
         $origin = rtrim(trim($_SERVER['HTTP_ORIGIN'] ?? ''), '/');
         $rawAllowed = explode(',', (string) Config::get('CORS_ALLOWED_ORIGIN', '*'));
