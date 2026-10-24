@@ -1,9 +1,7 @@
 {
-  "version": 2,
-  "public": true,
-  "outputDirectory": "frontend",
   "cleanUrls": true,
   "trailingSlash": false,
+  "outputDirectory": "frontend",
   "headers": [
     {
       "source": "/assets/(.*)",
