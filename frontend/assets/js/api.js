@@ -98,11 +98,20 @@ const api = {
       const data = await response.json().catch(() => null);
 
       if (!response.ok) {
-        // Handle 401 Unauthenticated
-        if (response.status === 401 && !endpoint.includes('/auth/login')) {
+        // Handle 401 Unauthenticated (do not redirect if already on login/index or if probing /auth/me)
+        if (response.status === 401 && !endpoint.includes('/auth/login') && !endpoint.includes('/auth/me')) {
           sessionStorage.removeItem('campus_user');
           this.setAuthToken(null);
-          if (!window.location.pathname.endsWith('login.html') && !window.location.pathname.endsWith('index.html')) {
+          
+          const path = (window.location.pathname || '').toLowerCase();
+          const isAuthPage = path.endsWith('login.html') 
+            || path.endsWith('/login') 
+            || path === '/login' 
+            || path.endsWith('index.html') 
+            || path === '/' 
+            || path === '';
+
+          if (!isAuthPage) {
             window.location.href = 'login.html';
           }
         }
