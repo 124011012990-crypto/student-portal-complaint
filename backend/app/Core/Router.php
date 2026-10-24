@@ -106,13 +106,46 @@ class Router
         $rawAllowed = explode(',', (string) Config::get('CORS_ALLOWED_ORIGIN', '*'));
         $allowedOrigins = array_map(fn($o) => rtrim(trim($o), '/'), $rawAllowed);
 
-        if (in_array('*', $allowedOrigins, true)) {
-            header('Access-Control-Allow-Origin: ' . ($origin ?: '*'));
-        } elseif ($origin !== '' && in_array($origin, $allowedOrigins, true)) {
-            header("Access-Control-Allow-Origin: {$origin}");
+        $frontendUrl = rtrim(trim((string) Config::get('FRONTEND_URL', '')), '/');
+        if ($frontendUrl !== '' && !in_array($frontendUrl, $allowedOrigins, true)) {
+            $allowedOrigins[] = $frontendUrl;
         }
 
-        header('Access-Control-Allow-Credentials: true');
+        $isAllowed = false;
+
+        // 1. Wildcard allowed in config
+        if (in_array('*', $allowedOrigins, true)) {
+            $isAllowed = true;
+        } elseif ($origin !== '') {
+            // 2. Explicit origin in configured list
+            if (in_array($origin, $allowedOrigins, true)) {
+                $isAllowed = true;
+            }
+            // 3. Any local development origin (localhost, 127.0.0.1, LAN IP) on any port
+            elseif (preg_match('#^https?://(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$#', $origin)) {
+                $isAllowed = true;
+            }
+            // 4. Any Vercel deployment (preview or production domains)
+            elseif (preg_match('#^https://[a-zA-Z0-9_-]+\.vercel\.app$#', $origin)) {
+                $isAllowed = true;
+            }
+            // 5. Any Render deployment
+            elseif (preg_match('#^https://[a-zA-Z0-9_-]+\.onrender\.com$#', $origin)) {
+                $isAllowed = true;
+            }
+            // 6. Any Netlify deployment
+            elseif (preg_match('#^https://[a-zA-Z0-9_-]+\.netlify\.app$#', $origin)) {
+                $isAllowed = true;
+            }
+        }
+
+        if ($isAllowed && $origin !== '') {
+            header("Access-Control-Allow-Origin: {$origin}");
+            header('Access-Control-Allow-Credentials: true');
+        } elseif ($isAllowed) {
+            header('Access-Control-Allow-Origin: *');
+        }
+
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-Token, X-Session-Token');
         header('Access-Control-Max-Age: 86400');

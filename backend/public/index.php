@@ -64,6 +64,28 @@ Session::start();
 // Setup Router
 $router = new Router();
 
+// --- Health / Root Information Endpoints ---
+$router->get('/', function () {
+    Response::json([
+        'success'      => true,
+        'service'      => Config::get('APP_NAME', 'CampusCare') . ' Backend API',
+        'status'       => 'operational',
+        'version'      => '2.4.0',
+        'message'      => 'CampusCare API is running. Access the user portal at FRONTEND_URL.',
+        'frontend_url' => Config::get('FRONTEND_URL', 'https://student-portal-complaint-frontend.vercel.app'),
+        'portal_login' => rtrim((string)Config::get('FRONTEND_URL', 'https://student-portal-complaint-frontend.vercel.app'), '/') . '/login.html'
+    ]);
+});
+
+$router->get('/api', function () {
+    Response::json([
+        'success'     => true,
+        'service'     => Config::get('APP_NAME', 'CampusCare') . ' Backend API',
+        'status'      => 'operational',
+        'version'     => '2.4.0'
+    ]);
+});
+
 // --- Auth Endpoints ---
 $router->post('/api/auth/login', ['App\Controllers\AuthController', 'login']);
 $router->post('/api/auth/logout', ['App\Controllers\AuthController', 'logout'], [[AuthMiddleware::class, 'handle']]);

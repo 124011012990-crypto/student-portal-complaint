@@ -1,7 +1,7 @@
 @echo off
 TITLE CampusCare — Local Server
 echo ========================================================
-echo   CampusCare: Student Grievance & Complaint Portal      
+echo   CampusCare: Student Grievance ^& Complaint Portal      
 echo ========================================================
 echo.
 

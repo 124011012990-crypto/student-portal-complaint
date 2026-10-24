@@ -5,6 +5,18 @@
 const auth = {
   currentUser: null,
 
+  getUser() {
+    if (this.currentUser) return this.currentUser;
+    try {
+      const stored = sessionStorage.getItem('campus_user');
+      if (stored) {
+        this.currentUser = JSON.parse(stored);
+        return this.currentUser;
+      }
+    } catch (e) {}
+    return null;
+  },
+
   async getCurrentUser(forceRefresh = false) {
     if (this.currentUser && !forceRefresh) {
       return this.currentUser;

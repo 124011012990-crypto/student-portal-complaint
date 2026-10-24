@@ -31,6 +31,26 @@ const Navbar = {
     if (!headerEl) return;
 
     const pageLabel = customBreadcrumb || this.pageTitles[activePage] || 'Portal';
+    const isDetailsPage = activePage === 'details' || window.location.pathname.includes('complaint-details.html');
+    const roleSlug = user && user.role_slug ? user.role_slug.toLowerCase() : 'student';
+    const complaintsUrl = roleSlug === 'student' ? 'my-complaints.html' : 'complaints.html';
+
+    let breadcrumbsHtml = '';
+    if (isDetailsPage) {
+      breadcrumbsHtml = `
+        <a href="dashboard.html" style="color:var(--color-text-muted);text-decoration:none;">Dashboard</a>
+        <span class="breadcrumb-separator">/</span>
+        <a href="${complaintsUrl}" style="color:var(--color-text-muted);text-decoration:none;">Grievances</a>
+        <span class="breadcrumb-separator">/</span>
+        <span id="detail-ref" class="breadcrumb-current">${customBreadcrumb || 'Loading...'}</span>
+      `;
+    } else {
+      breadcrumbsHtml = `
+        <a href="dashboard.html" style="color:var(--color-text-muted);text-decoration:none;">Portal</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">${pageLabel}</span>
+      `;
+    }
 
     // 1. Ensure left breadcrumbs section
     let headerLeft = headerEl.querySelector('.header-left');
@@ -46,9 +66,7 @@ const Navbar = {
         ${menuIcon}
       </button>
       <nav class="breadcrumbs" aria-label="Breadcrumbs">
-        <span>Portal</span>
-        <span class="breadcrumb-separator">/</span>
-        <span class="breadcrumb-current">${pageLabel}</span>
+        ${breadcrumbsHtml}
       </nav>
     `;
 
@@ -110,6 +128,10 @@ const Navbar = {
   },
 
   setBreadcrumb(pageName) {
+    const refEl = document.getElementById('detail-ref');
+    if (refEl) {
+      refEl.textContent = pageName;
+    }
     const currentEl = document.querySelector('.breadcrumb-current');
     if (currentEl) {
       currentEl.textContent = pageName;

@@ -165,13 +165,14 @@ const complaints = {
     const user = await auth.requireAuth();
     if (!user) return;
 
-    await app.initLayout('complaints');
+    const isStudent = user.role_slug === 'student';
+    await app.initLayout(isStudent ? 'my-complaints' : 'complaints');
 
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('ref');
 
     if (!ref) {
-      window.location.href = 'complaints.html';
+      window.location.href = isStudent ? 'my-complaints.html' : 'complaints.html';
       return;
     }
 
@@ -180,40 +181,61 @@ const complaints = {
   },
 
   async loadDetails(ref, user) {
+    const isStudent = user && user.role_slug === 'student';
+    const backUrl = isStudent ? 'my-complaints.html' : 'complaints.html';
+    let c = null;
+
     try {
       const res = await api.get(`/complaints/${encodeURIComponent(ref)}`);
-      const c = res.data;
-      this.renderDetailsData(c, user);
+      c = res.data;
     } catch (e) {
-      app.showToast('Grievance not found or access denied: ' + e.message, 'error');
-      setTimeout(() => window.location.href = 'complaints.html', 1500);
+      app.showToast('Grievance not found or access denied: ' + (e.message || 'Unable to load grievance'), 'error');
+      setTimeout(() => window.location.href = backUrl, 2000);
+      return;
+    }
+
+    try {
+      this.renderDetailsData(c, user);
+    } catch (err) {
+      console.error('Error rendering grievance details:', err);
+      app.showToast('Error displaying grievance details: ' + err.message, 'error');
     }
   },
 
   renderDetailsData(c, user) {
+    const setElemText = (id, text) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text !== null && text !== undefined ? text : '';
+    };
+    const setElemHtml = (id, html) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = html !== null && html !== undefined ? html : '';
+    };
+
     // Header & Meta
-    document.getElementById('detail-ref').textContent = c.reference_number;
-    document.getElementById('detail-title').textContent = c.title;
-    document.getElementById('detail-category').textContent = c.category_name;
-    document.getElementById('detail-department').textContent = c.department_name;
-    document.getElementById('detail-created').textContent = app.formatDate(c.created_at);
-    document.getElementById('detail-due').textContent = app.formatDate(c.due_date);
-    document.getElementById('detail-description').textContent = c.description;
+    setElemText('detail-ref', c.reference_number);
+    setElemText('detail-ref-badge', c.reference_number);
+    setElemText('detail-title', c.title);
+    setElemText('detail-category', c.category_name);
+    setElemText('detail-department', c.department_name);
+    setElemText('detail-created', app.formatDate(c.created_at));
+    setElemText('detail-due', app.formatDate(c.due_date));
+    setElemText('detail-description', c.description);
 
     // Badges
-    document.getElementById('detail-priority-badge').innerHTML = app.getPriorityBadge(c.priority);
-    document.getElementById('detail-status-badge').innerHTML = app.getStatusBadge(c.status);
-    document.getElementById('detail-conf-badge').innerHTML = app.getConfidentialityBadge(c.confidentiality_level);
+    setElemHtml('detail-priority-badge', app.getPriorityBadge(c.priority));
+    setElemHtml('detail-status-badge', app.getStatusBadge(c.status));
+    setElemHtml('detail-conf-badge', app.getConfidentialityBadge(c.confidentiality_level));
 
     // Student Info (respected by anonymity rules)
-    document.getElementById('detail-student-name').textContent = c.student_name;
-    document.getElementById('detail-student-roll').textContent = c.roll_number || 'N/A';
-    document.getElementById('detail-student-email').textContent = c.student_email || 'N/A';
+    setElemText('detail-student-name', c.student_name);
+    setElemText('detail-student-roll', c.roll_number || 'N/A');
+    setElemText('detail-student-email', c.student_email || 'N/A');
 
     // Assigned Info (Shielded from student view, visible only to admin/officer)
     const assignedEl = document.getElementById('detail-assigned-to');
     if (assignedEl) {
-      const currentUser = auth.getUser();
+      const currentUser = user || (auth.getUser ? auth.getUser() : null);
       const isStudent = currentUser && currentUser.role_slug === 'student';
       const isAdmin = currentUser && (currentUser.role_slug === 'admin' || currentUser.role_slug === 'officer');
 
@@ -233,8 +255,8 @@ const complaints = {
     if (resBox) {
       if (c.resolution_summary) {
         resBox.style.display = 'block';
-        document.getElementById('detail-resolution-text').textContent = c.resolution_summary;
-        document.getElementById('detail-resolved-at').textContent = app.formatDate(c.resolved_at);
+        setElemText('detail-resolution-text', c.resolution_summary);
+        setElemText('detail-resolved-at', app.formatDate(c.resolved_at));
       } else {
         resBox.style.display = 'none';
       }
@@ -264,7 +286,7 @@ const complaints = {
     // Render Timeline History (Shield staff identity if student is viewing)
     const timelineEl = document.getElementById('detail-timeline');
     if (timelineEl && c.history) {
-      const currentUser = auth.getUser();
+      const currentUser = user || (auth.getUser ? auth.getUser() : null);
       const isStudent = currentUser && currentUser.role_slug === 'student';
 
       timelineEl.innerHTML = c.history.map(h => {

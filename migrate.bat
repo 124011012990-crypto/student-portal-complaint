@@ -1,7 +1,7 @@
 @echo off
 TITLE CampusCare — Database Migration Runner
 echo ========================================================
-echo   CampusCare: Database Migration & Schema Setup        
+echo   CampusCare: Database Migration ^& Schema Setup        
 echo ========================================================
 echo.
 
